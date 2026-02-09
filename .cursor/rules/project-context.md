@@ -4,7 +4,9 @@
 
 This is a technical assessment project: a web application that compares the financial viability of **renting a car** (subscription services like Localiza) versus **buying a car** (cash or financed).
 
-## Objective
+---
+
+## 🎯 Objective
 
 Build a full-stack calculator with:
 
@@ -13,86 +15,150 @@ Build a full-stack calculator with:
 - **Features:** Cash purchase, financed purchase, rental cost comparison
 - **Calculations:** Include opportunity cost, depreciation, maintenance, taxes (IPVA)
 
-## Key Requirements
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+- React 19 + TypeScript 5 + Vite 7
+- Recharts (data visualization)
+- CSS Modules (styling)
+- Axios (API communication)
+
+### Backend
+- Node.js 22 LTS + Express 5 + TypeScript 5
+- Zod (input validation)
+- CORS (cross-origin requests)
+
+---
+
+## 📋 Key Requirements
 
 1. **Decoupled frontend/backend** (separate folders in this repo)
-2. **Input validation** (suggest Zod/Joi on backend)
-3. **Clean calculation logic** (separate utility/service layer for testability)
-4. **Visual break-even point graph** (Chart.js/Recharts recommended)
+2. **Input validation** (Zod on backend)
+3. **Clean calculation logic** (separate service layer for testability)
+4. **Visual break-even point graph** (Recharts)
 5. **Professional code structure and documentation**
 
-## Architecture
+---
 
-### Backend: Hexagonal Architecture (Ports and Adapters)
+## 🏗 Architecture
 
-```
-backend/src/
-├── domain/           # Core business logic (entities, value objects)
-├── application/      # Use cases and application services
-│   └── services/     # Business logic services (calculations)
-├── adapters/
-│   ├── controllers/  # HTTP request handlers (input adapters)
-│   ├── validators/   # Input validation (Zod/Joi)
-│   └── repositories/ # Data access (if needed)
-├── ports/            # Interfaces (contracts)
-└── index.ts          # Infrastructure setup (Express, routes)
-```
+See **[architecture.md](./architecture.md)** for detailed architecture guide.
 
-**Key principles:**
-- Core business logic (calculations) is independent of Express
-- Controllers adapt HTTP requests to domain operations
-- Services contain pure calculation logic
-- Easy to test, easy to change infrastructure
+**Quick Summary:**
+- **Backend:** Hexagonal Architecture (Ports and Adapters)
+  - Domain → Application → Adapters → Infrastructure
+- **Frontend:** Atomic Design
+  - Atoms → Molecules → Organisms → Templates → Pages
 
-### Frontend: Atomic Design
+**Ports:**
+- Backend API: Port 3000
+- Frontend Dev Server: Port 5173
 
-```
-frontend/src/
-├── components/
-│   ├── atoms/        # Basic building blocks (Button, Input, Label)
-│   ├── molecules/    # Simple combinations (InputField, Card)
-│   ├── organisms/    # Complex components (CalculatorForm, ResultsTable)
-│   ├── templates/    # Page layouts
-│   └── pages/        # Full pages with data
-├── services/         # API communication
-├── types/            # TypeScript interfaces
-└── utils/            # Helper functions
-```
+---
 
-**Key principles:**
-- Build from small to large (atoms → molecules → organisms → pages)
-- Reusable components with clear responsibilities
-- Each component is focused and testable
+## 📊 Financial Calculations
 
-### Ports
+See **[financial-formulas.md](./financial-formulas.md)** for detailed formulas.
 
-- **Backend:** Port 3000 (Express API)
-- **Frontend:** Port 5173 (Vite dev server)
+**Key Concepts:**
+- **Opportunity Cost:** Lost investment returns (Selic/CDI ~13.75% aa)
+- **Depreciation:** Car value loss over time (~15-20% per year)
+- **Break-even Point:** When buying becomes cheaper than renting
+- **IPVA:** ~4% of car value annually
+- **Insurance:** ~6% of car value annually
 
-## Evaluation Criteria
+---
+
+## 📝 Development Guidelines
+
+### Code Standards
+See **[coding-standards.md](./coding-standards.md)** for detailed standards.
+
+**Quick Rules:**
+- TypeScript strict mode ALWAYS
+- No `any` (use `unknown` if needed)
+- Functional components with hooks
+- One component per file
+- Services with pure functions
+
+### Commit Rules
+See **[commit-rules.md](./commit-rules.md)** for detailed commit guidelines.
+
+**Quick Rules:**
+- Use prefixes: `feat:`, `fix:`, `chore:`, etc.
+- Portuguese only
+- Max 2 lines
+- No internal references (FASE 1, BUG 2, etc.)
+
+---
+
+## 🎓 Evaluation Criteria
 
 Recruiters are assessing:
 
-- **Project structure** and organization
-- **Code quality** and best practices
-- **Problem-solving logic** (especially financial calculations)
-- **Documentation** clarity
+- ✅ **Project structure** and organization
+- ✅ **Code quality** and best practices
+- ✅ **Problem-solving logic** (especially financial calculations)
+- ✅ **Documentation** clarity
+- ✅ **TypeScript** usage
+- ✅ **Testing** approach (if implemented)
 
-## Important Implementation Notes
+---
 
-### Financial Calculations
+## 🚀 Development Approach
 
-- **Opportunity Cost:** Critical for "senior" awareness. If $50k goes into a car, calculate the lost investment returns.
-- **Depreciation:** Cars lose value over time; factor this into ownership cost.
-- **Break-even Point:** Show graphically where buying becomes cheaper than renting.
+### Phase Priorities (1 Week Timeline)
 
-### Code Organization
+1. **Days 1-2:** Core backend (calculations + API)
+2. **Days 3-4:** Frontend UI + integration
+3. **Days 5-6:** Charts, polish, testing
+4. **Day 7:** Documentation review, final touches
 
-- Keep calculation logic in separate services/utils (backend)
-- Validate all numeric inputs server-side
-- Use proper TypeScript types throughout
-- Write clean, testable code
+### Focus Areas
 
-## References
+1. **Calculation Logic:** Most important - shows problem-solving
+2. **Clean Architecture:** Shows senior-level thinking
+3. **Code Quality:** TypeScript, validation, error handling
+4. **UI/UX:** Professional look, clear results
 
-- [README.md](../../README.md) - Complete project documentation and setup instructions
+---
+
+## 📚 Quick References
+
+- **Architecture Details:** [architecture.md](./architecture.md)
+- **Coding Standards:** [coding-standards.md](./coding-standards.md)
+- **Financial Formulas:** [financial-formulas.md](./financial-formulas.md)
+- **Commit Rules:** [commit-rules.md](./commit-rules.md)
+- **Project Documentation:** [README.md](../../README.md)
+- **Progress Tracking:** [PHASES.md](../../PHASES.md)
+
+---
+
+## 💡 Important Notes
+
+- **Architecture over speed:** Better a well-structured partial implementation than a messy complete one
+- **Testable code:** Write code that can be tested (pure functions, dependency injection)
+- **Documentation matters:** Clear README and code comments show professionalism
+- **TypeScript is your friend:** Use types to catch errors early
+- **Financial accuracy:** Double-check calculation formulas
+
+---
+
+## 🎯 Success Criteria
+
+Project is successful when:
+
+- [ ] Backend has clean hexagonal architecture
+- [ ] Frontend follows atomic design
+- [ ] Financial calculations are accurate and documented
+- [ ] API has proper validation and error handling
+- [ ] UI is clean and intuitive
+- [ ] Results are clearly visualized (chart + table)
+- [ ] Code is well-documented
+- [ ] README is comprehensive
+
+---
+
+*This is the main context file. Refer to linked documents for detailed guidelines.*
