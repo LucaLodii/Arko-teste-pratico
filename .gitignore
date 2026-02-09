@@ -1,0 +1,22 @@
+# Root-level gitignore for project-wide exclusions
+
+# OS - Windows & Mac
+.DS_Store
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# IDE - Cursor (keep .cursor/rules/ in git, ignore other cursor temp files)
+.cursor/chat-history/
+.cursor/logs/
+.cursor/.cursorrules
+*.code-workspace
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+.cache
