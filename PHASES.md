@@ -56,49 +56,6 @@ For full project requirements, see [PROJECT.md](PROJECT.md).
 
 ---
 
-## Suggested Phase Structure
-
-You can organize future phases around these areas:
-
-1. **API Design & Backend Logic**
-   - Define API endpoints for calculations
-   - Implement calculation services (cash, financed, rental)
-   - Add opportunity cost, depreciation calculations
-   - Input validation with Zod/Joi
-
-2. **Frontend Foundation**
-   - Set up routing and page structure
-   - Create form components for inputs
-   - Set up state management
-   - Connect to backend API
-
-3. **Calculations & Business Logic**
-   - Cash purchase calculation
-   - Financed purchase calculation (with interest)
-   - Rental cost projection
-   - Opportunity cost calculation
-   - Break-even point algorithm
-
-4. **UI/UX & Visualization**
-   - Design clean, intuitive interface
-   - Add Chart.js/Recharts for visualization
-   - Display break-even point graph
-   - Show comparison results
-
-5. **Testing & Polish**
-   - Add unit tests for calculations
-   - Test API endpoints
-   - Cross-browser testing
-   - Documentation review
-
-6. **Deployment**
-   - Prepare for deployment
-   - Set up hosting (Vercel/Netlify for frontend, Railway/Render for backend)
-   - Environment configuration
-   - Final testing
-
----
-
 ## Notes
 
 - Mark phases complete with ✅ as you finish them
