@@ -39,176 +39,65 @@ Regras para commits no projeto.
 
 Sempre usar prefixos padronizados seguidos de **dois pontos e espaço**:
 
-### feat: Nova Funcionalidade
-Adição de uma nova funcionalidade ao projeto.
+- **`feat:`** - Nova funcionalidade
+- **`fix:`** - Correção de bug
+- **`refactor:`** - Refatoração de código (sem mudança de funcionalidade)
+- **`docs:`** - Mudanças na documentação
+- **`style:`** - Formatação, ponto e vírgula faltando, etc (sem mudança de código)
+- **`test:`** - Adicionar ou modificar testes
+- **`chore:`** - Mudanças em build, dependências, configurações, etc
+- **`perf:`** - Melhoria de performance
+- **`build:`** - Mudanças no sistema de build ou dependências externas
 
-```bash
-feat: adiciona cálculo de custo de compra à vista
-feat: implementa formulário de entrada de dados no frontend
+---
+
+## 📋 Formato
+
 ```
-
-### fix: Correção de Bug
-Correção de um problema ou bug no código.
-
-```bash
-fix: corrige cálculo de depreciação para valores negativos
-fix: resolve erro de validação no campo de taxa de juros
-```
-
-### refactor: Refatoração
-Mudança no código que não altera funcionalidade (melhoria de estrutura, legibilidade).
-
-```bash
-refactor: extrai lógica de cálculo para serviço dedicado
-refactor: simplifica componente de formulário removendo estado duplicado
-```
-
-### docs: Documentação
-Mudanças exclusivamente em documentação.
-
-```bash
-docs: atualiza README com instruções de instalação
-docs: adiciona comentários nas fórmulas financeiras
-```
-
-### style: Formatação
-Mudanças que não afetam o significado do código (espaços, formatação, ponto e vírgula).
-
-```bash
-style: formata código com Prettier
-style: ajusta indentação no arquivo de configuração
-```
-
-### test: Testes
-Adição ou modificação de testes.
-
-```bash
-test: adiciona testes unitários para serviço de cálculo
-test: cobre casos de erro no controller de cálculo
-```
-
-### chore: Configuração/Build
-Mudanças em configuração, dependências, build, ferramentas.
-
-```bash
-chore: adiciona dependência Zod para validação
-chore: configura CORS no backend
-chore: atualiza configuração do TypeScript
-```
-
-### perf: Performance
-Melhorias de performance.
-
-```bash
-perf: otimiza cálculo de ponto de equilíbrio
-perf: adiciona memoização no componente de gráfico
-```
-
-### build: Build System
-Mudanças no sistema de build ou dependências externas.
-
-```bash
-build: atualiza Vite para versão 7.0
-build: configura build para produção
+prefixo: descrição curta na primeira linha
+         descrição adicional opcional na segunda linha (se necessário)
 ```
 
 ---
 
-## ✅ Exemplos de Bons Commits
+## ⚠️ O que NÃO Fazer
 
-### Commit Simples (1 linha)
-```bash
-feat: adiciona endpoint de cálculo de comparação
-```
-
-### Commit com Detalhamento (2 linhas)
-```bash
-feat: implementa cálculo de custo de oportunidade
-Considera taxa Selic para calcular rendimento perdido do capital investido
-```
-
-### Múltiplas Mudanças Relacionadas (1 commit)
-```bash
-chore: melhora configuração de .gitignore e adiciona templates de variáveis de ambiente
-```
+- ❌ Fazer commits sem autorização do usuário
+- ❌ Fazer múltiplos commits pequenos quando um único commit consolidado é suficiente
+- ❌ Fazer push (sempre deixar para o usuário)
+- ❌ Usar inglês nos commits
+- ❌ Commits muito longos (mais de 2 linhas)
+- ❌ Mensagens vagas ("fix: corrige bug", "feat: adiciona feature")
+- ❌ **Mencionar "FASE 1", "FASE 2", "BUG 1", etc.** - usar descrições claras da funcionalidade ao invés de referências a planos internos
 
 ---
 
-## ❌ Exemplos de Commits Ruins
+## 🔄 Workflow
 
-### Muito Vago
-```bash
-fix: corrige bug  ❌
-# Deveria ser: fix: corrige cálculo de depreciação para valores negativos
-```
-
-### Referência Interna
-```bash
-feat: implementa FASE 2 do projeto  ❌
-# Deveria ser: feat: adiciona formulário de entrada de dados
-```
-
-### Muito Longo
-```bash
-feat: adiciona nova funcionalidade de cálculo que permite ao usuário...  ❌
-# Quebrar em 2 linhas ou simplificar
-```
-
-### Prefixo Errado
-```bash
-feat: corrige erro no cálculo  ❌
-# Deveria ser: fix: corrige erro no cálculo
-```
-
-### Em Inglês
-```bash
-feat: add calculation endpoint  ❌
-# Deveria ser: feat: adiciona endpoint de cálculo
-```
-
----
-
-## 🔄 Workflow de Commit
-
-1. **Fazer as mudanças no código**
-2. **Verificar o que foi alterado**: `git status`, `git diff`
-3. **Staging das mudanças**: `git add <arquivos>`
-4. **Criar commit**: `git commit -m "prefixo: descrição clara"`
-5. **NUNCA fazer push** (usuário fará quando apropriado)
+1. Fazer mudanças no código
+2. Verificar alterações: `git status`, `git diff`
+3. Adicionar ao staging: `git add <arquivos>`
+4. Criar commit com mensagem clara
+5. **NUNCA fazer push** (usuário faz quando apropriado)
 
 ---
 
 ## 📊 Quando Fazer Múltiplos Commits
 
-Em vez de 1 commit grande, fazer commits separados quando:
+Fazer commits separados quando:
+- Mudanças são **logicamente independentes**
+- Features são **completamente diferentes**
+- **Fix urgente** em meio a desenvolvimento
 
-1. Mudanças são **logicamente independentes**
-   ```bash
-   git commit -m "feat: adiciona validação de entrada"
-   git commit -m "feat: adiciona cálculo de financiamento"
-   ```
-
-2. Features **completamente diferentes**
-   ```bash
-   git commit -m "feat: implementa backend de cálculo"
-   # ... testes ...
-   git commit -m "feat: implementa interface de usuário"
-   ```
-
-3. **Fix urgente** em meio a desenvolvimento
-   ```bash
-   git commit -m "fix: corrige erro crítico de validação"
-   # Continuar desenvolvimento...
-   git commit -m "feat: adiciona nova funcionalidade"
-   ```
+Caso contrário, **consolidar em um único commit**.
 
 ---
 
 ## 🎯 Checklist Antes de Commitar
 
 - [ ] O código foi testado e funciona?
-- [ ] Todos os arquivos relevantes foram adicionados ao staging?
-- [ ] A mensagem de commit é clara e descritiva?
+- [ ] Todos os arquivos relevantes estão no staging?
+- [ ] A mensagem é clara e descritiva?
 - [ ] O prefixo está correto?
 - [ ] A mensagem está em português?
 - [ ] Não há referências a "FASE X" ou "BUG X"?
@@ -216,10 +105,7 @@ Em vez de 1 commit grande, fazer commits separados quando:
 
 ---
 
-## 📚 Referências
+## 📚 Baseado Em
 
-Este padrão é baseado em:
 - [Conventional Commits](https://www.conventionalcommits.org/)
 - [Angular Commit Guidelines](https://github.com/angular/angular/blob/main/CONTRIBUTING.md#commit)
-
-Adaptado para o contexto e preferências deste projeto.
