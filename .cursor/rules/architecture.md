@@ -131,12 +131,18 @@ export class CalculationController {
 
 #### Services
 ```typescript
-// ✅ Bom: Service com função pura, sem side effects
+// ✅ Bom: Service com função pura, sem side effects. Usa OpportunityCostService.
 export class CashPurchaseService {
+  constructor(private opportunityCostService: OpportunityCostService) {}
+
   calculate(params: CashPurchaseParams): CashPurchaseResult {
     const depreciation = this.calculateDepreciation(params.carValue, params.years);
-    const opportunityCost = this.calculateOpportunityCost(params.carValue, params.interestRate);
-    
+    const opportunityCost = this.opportunityCostService.calculate(
+      params.carValue,
+      params.years,
+      params.interestRate
+    );
+
     return {
       totalCost: params.carValue + params.maintenance - depreciation + opportunityCost,
       depreciation,
@@ -168,7 +174,12 @@ export class CalculateComparisonUseCase {
     const cashResult = this.cashService.calculate(input);
     const financedResult = this.financedService.calculate(input);
     const rentalResult = this.rentalService.calculate(input);
-    const breakEven = this.breakEvenService.calculate(cashResult, rentalResult);
+    const breakEven = this.breakEvenService.calculate(
+      input,
+      this.cashService,
+      this.financedService,
+      this.rentalService
+    );
 
     return { cashResult, financedResult, rentalResult, breakEven };
   }
