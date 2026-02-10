@@ -1,0 +1,12 @@
+.label {
+  display: block;
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+  color: inherit;
+}
+
+.required {
+  color: #ef4444;
+  margin-left: 0.125rem;
+}

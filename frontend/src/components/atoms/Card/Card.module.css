@@ -1,0 +1,35 @@
+.card {
+  border-radius: 8px;
+  background-color: #1a1a1a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.card--outlined {
+  background-color: transparent;
+  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.card--padding-small {
+  padding: 1rem;
+}
+
+.card--padding-medium {
+  padding: 1.5rem;
+}
+
+.card--padding-large {
+  padding: 2rem;
+}
+
+@media (prefers-color-scheme: light) {
+  .card {
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .card--outlined {
+    background-color: transparent;
+    border-color: rgba(0, 0, 0, 0.12);
+  }
+}

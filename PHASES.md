@@ -357,15 +357,15 @@ CalculationInput
 **Goal:** Build basic UI atoms (Button, Input, Label, Card).
 
 **Tasks:**
-- [ ] Create `frontend/src/components/atoms/Button/` (Button.tsx, styles, index)
-- [ ] Create `frontend/src/components/atoms/Input/` – controlled input, type="number" or "text"
-- [ ] Create `frontend/src/components/atoms/Label/` – label text
-- [ ] Create `frontend/src/components/atoms/Card/` – container
-- [ ] Use CSS Modules or plain CSS (per architecture)
+- [x] Create `frontend/src/components/atoms/Button/` (Button.tsx, styles, index)
+- [x] Create `frontend/src/components/atoms/Input/` – controlled input, type="number" or "text"
+- [x] Create `frontend/src/components/atoms/Label/` – label text
+- [x] Create `frontend/src/components/atoms/Card/` – container
+- [x] Use CSS Modules or plain CSS (per architecture)
 
 **Reference:** `.cursor/rules/architecture.md` (atoms)
 
-**Status:** Not started
+**Status:** Complete
 
 ---
 
