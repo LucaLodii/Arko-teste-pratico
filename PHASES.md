@@ -374,12 +374,12 @@ CalculationInput
 **Goal:** Reusable form field (Label + Input + optional error).
 
 **Tasks:**
-- [ ] Create `frontend/src/components/molecules/InputField/` – Label + Input + error message
-- [ ] Props: label, value, onChange, error?, type?, placeholder?, min?, max?
+- [x] Create `frontend/src/components/molecules/InputField/` – Label + Input + error message
+- [x] Props: label, value, onChange, error?, type?, placeholder?, min?, max?
 
 **Reference:** `.cursor/rules/architecture.md` (molecules)
 
-**Status:** Not started
+**Status:** Complete
 
 ---
 
