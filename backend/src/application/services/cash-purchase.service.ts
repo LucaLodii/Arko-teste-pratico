@@ -29,7 +29,10 @@ export class CashPurchaseService {
     const carValue = input.carValue;
     const analysisPeriodMonths = input.analysisPeriodMonths;
     const anos = Math.floor(analysisPeriodMonths / 12);
-    const taxas = input.depreciationRate ?? DEFAULT_DEPRECIATION_RATES;
+    const taxas =
+      input.depreciationRate && input.depreciationRate.length > 0
+        ? input.depreciationRate
+        : DEFAULT_DEPRECIATION_RATES;
 
     // Build year-by-year values for depreciation, IPVA, and insurance
     let valorAtual = carValue;

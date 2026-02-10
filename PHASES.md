@@ -258,21 +258,21 @@ CalculationInput
 **Goal:** Define request/response DTOs and validate input with Zod.
 
 **Tasks:**
-- [ ] Create `backend/src/adapters/dto/calculation-request.dto.ts` (align with CalculationInput)
-- [ ] Create `backend/src/adapters/dto/calculation-response.dto.ts` (align with CalculationResponse)
-- [ ] Create `backend/src/adapters/validators/calculation-input.validator.ts` – Zod schema with explicit defaults:
+- [x] Create `backend/src/adapters/dto/calculation-request.dto.ts` (align with CalculationInput)
+- [x] Create `backend/src/adapters/dto/calculation-response.dto.ts` (align with CalculationResponse)
+- [x] Create `backend/src/adapters/validators/calculation-input.validator.ts` – Zod schema with explicit defaults:
   - Required fields: carValue, monthlyRent, interestRateMonth, financingTermMonths, analysisPeriodMonths (all positive numbers)
   - `downPaymentPercent`: default 0.25 (25%)
   - `maintenanceAnnual`: default 2000
   - `insuranceRateAnnual`: default 0.06 (6%)
   - `ipvaRate`: default 0.04 (4%)
   - `depreciationRate`: default array `[0.20, 0.15, 0.15, 0.10, 0.10]` from financial-formulas § 1.1
-- [ ] Add validation rules: all numbers must be positive, rates between 0-1, periods in months (positive integers)
-- [ ] Export parsed/safe type from validator
+- [x] Add validation rules: all numbers must be positive, rates between 0-1, periods in months (positive integers)
+- [x] Export parsed/safe type from validator
 
 **Reference:** `.cursor/rules/architecture.md` (adapters), `.cursor/rules/financial-formulas.md` (defaults)
 
-**Status:** Not started
+**Status:** ✅ Complete
 
 ---
 
@@ -281,22 +281,22 @@ CalculationInput
 **Goal:** HTTP layer: receive POST, validate, call use case, return JSON.
 
 **Tasks:**
-- [ ] Create `backend/src/adapters/controllers/calculation.controller.ts`
+- [x] Create `backend/src/adapters/controllers/calculation.controller.ts`
   - Class-based controller with constructor injection of CalculateComparisonUseCase
   - Method: `async calculate(req: Request, res: Response): Promise<void>`
   - Steps: 1) Validate req.body with Zod schema, 2) Call useCase.execute(validatedInput), 3) Return JSON response
   - Error handling: try-catch block, Zod errors → 400 with validation details, other errors → 500 with generic message
-- [ ] Create `backend/src/routes/calculation.routes.ts`
+- [x] Create `backend/src/routes/calculation.routes.ts`
   - Express Router instance
   - POST `/calculate` → controller.calculate (note: no `/api` prefix in routes, added in index.ts)
   - Export router
-- [ ] Follow architecture pattern: controller only adapts HTTP ↔ domain, NO business logic
+- [x] Follow architecture pattern: controller only adapts HTTP ↔ domain, NO business logic
 
 **Reference:** `.cursor/rules/architecture.md` (controllers section, data flow)
 
 **Constraint:** Do NOT put business logic in the controller. Only: validate, call use case, format response.
 
-**Status:** Not started
+**Status:** ✅ Complete
 
 ---
 
@@ -305,8 +305,8 @@ CalculationInput
 **Goal:** Connect routes to Express and enable frontend access with dependency injection.
 
 **Tasks:**
-- [ ] Install cors: `npm install cors` and `npm install --save-dev @types/cors`
-- [ ] In `backend/src/index.ts`:
+- [x] Install cors: `npm install cors` and `npm install --save-dev @types/cors`
+- [x] In `backend/src/index.ts`:
   - Import and configure CORS middleware: `app.use(cors({ origin: process.env.FRONTEND_URL || '*' }))`
   - Instantiate all services with proper dependency injection:
     - `opportunityCostService = new OpportunityCostService()`
@@ -318,13 +318,13 @@ CalculationInput
     - `calculationController = new CalculationController(calculateComparisonUseCase)`
   - Create routes with controller instance: `const calculationRoutes = createCalculationRoutes(calculationController)`
   - Mount routes: `app.use('/api', calculationRoutes)`
-- [ ] Update `backend/.env.example`: add PORT=3000, FRONTEND_URL=http://localhost:5173
-- [ ] Manual test with curl: `curl -X POST http://localhost:3000/api/calculate -H "Content-Type: application/json" -d '{"carValue":50000,"monthlyRent":2200,"interestRateMonth":0.015,"financingTermMonths":48,"analysisPeriodMonths":48}'`
-- [ ] Verify response has all fields: cashPurchase, financedPurchase, rental, breakEven with correct structure
+- [x] Update `backend/.env.example`: add PORT=3000, FRONTEND_URL=http://localhost:5173
+- [x] Manual test with curl: `curl -X POST http://localhost:3000/api/calculate -H "Content-Type: application/json" -d '{"carValue":50000,"monthlyRent":2200,"interestRateMonth":0.015,"financingTermMonths":48,"analysisPeriodMonths":48}'`
+- [x] Verify response has all fields: cashPurchase, financedPurchase, rental, breakEven with correct structure
 
 **Reference:** `.cursor/rules/architecture.md` (Infrastructure section)
 
-**Status:** Not started
+**Status:** ✅ Complete
 
 ---
 

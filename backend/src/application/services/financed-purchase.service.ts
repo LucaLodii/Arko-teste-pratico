@@ -33,7 +33,10 @@ export class FinancedPurchaseService {
     const carValue = input.carValue;
     const analysisPeriodMonths = input.analysisPeriodMonths;
     const anos = Math.floor(analysisPeriodMonths / 12);
-    const taxas = input.depreciationRate ?? DEFAULT_DEPRECIATION_RATES;
+    const taxas =
+      input.depreciationRate && input.depreciationRate.length > 0
+        ? input.depreciationRate
+        : DEFAULT_DEPRECIATION_RATES;
 
     // Down payment and financed amount
     const downPaymentPercent = input.downPaymentPercent ?? 0.25;
