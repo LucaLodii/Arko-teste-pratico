@@ -333,14 +333,14 @@ CalculationInput
 **Goal:** Prepare frontend to talk to backend: types, fetch, currency/percentage formatting.
 
 **Tasks:**
-- [ ] Create `frontend/src/types/calculation.types.ts` – mirror CalculationInput and CalculationResponse
-- [ ] Create `frontend/src/services/api.ts` – axios/fetch instance with baseURL from `VITE_API_URL` (default `http://localhost:3000`)
-- [ ] Create `frontend/src/services/calculation.service.ts` – `calculate(input): Promise<CalculationResponse>`
-- [ ] Create `frontend/src/utils/formatters.ts` – `formatCurrency(value)`, `formatPercent(value)`
+- [x] Create `frontend/src/types/calculation.types.ts` – mirror CalculationInput and CalculationResponse
+- [x] Create `frontend/src/services/api.ts` – axios/fetch instance with baseURL from `VITE_API_URL` (default `http://localhost:3000`)
+- [x] Create `frontend/src/services/calculation.service.ts` – `calculate(input): Promise<CalculationResponse>`
+- [x] Create `frontend/src/utils/formatters.ts` – `formatCurrency(value)`, `formatPercent(value)`
 
 **Reference:** README (API endpoints), backend types from Phase 2
 
-**Status:** Not started
+**Status:** Complete
 
 ---
 
