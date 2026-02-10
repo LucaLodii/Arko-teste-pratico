@@ -20,6 +20,30 @@ Requirements are documented in README, cursor rules (`.cursor/rules/`), and this
 
 ---
 
+## Implementation Summary (Phases 1–5)
+
+**Data flow:** `CalculationInput` → Services → `*Result` types
+
+```
+CalculationInput
+      │
+      ├──► OpportunityCostService.calculate(capital, years) → number
+      │
+      ├──► CashPurchaseService.calculate(input) → CashPurchaseResult { totalCost, breakdown }
+      │         └── injects OpportunityCostService (full car value)
+      │
+      ├──► FinancedPurchaseService.calculate(input) → FinancedPurchaseResult { totalCost, parcela, totalJuros, breakdown }
+      │         └── injects OpportunityCostService (down payment only)
+      │
+      └──► RentalService.calculate(input) → RentalResult (Phase 6)
+```
+
+**Shared defaults:** Depreciation rates [0.20, 0.15, 0.15, 0.10, 0.10], maintenance R$ 2,000/year, insurance 6%, IPVA 4%. Cash and Financed services use identical depreciation logic for ownership costs.
+
+**Next phases:** Phase 6 (RentalService), Phase 7 (BreakEvenService orchestrates cash/financed/rental), Phase 8 (CalculateComparisonUseCase aggregates all).
+
+---
+
 ## Phase 1: Environment Setup ✅
 
 **Goal:** Set up development environment and project scaffolding.
@@ -82,58 +106,60 @@ Requirements are documented in README, cursor rules (`.cursor/rules/`), and this
 
 ---
 
-## Phase 4: Backend – Cash Purchase Service
+## Phase 4: Backend – Cash Purchase Service ✅
 
 **Goal:** Implement cash purchase cost calculation in a pure service.
 
 **Before starting:** Read `.cursor/rules/financial-formulas.md` § 1 (Compra à Vista).
 
 **Tasks:**
-- [ ] Create `backend/src/application/services/cash-purchase.service.ts`
-- [ ] Constructor: inject OpportunityCostService
-- [ ] Depreciação exponencial: Calcular valor residual iterando por cada ano usando taxas `[0.20, 0.15, 0.15, 0.10, 0.10]` do § 1.1
+- [x] Create `backend/src/application/services/cash-purchase.service.ts`
+- [x] Constructor: inject OpportunityCostService
+- [x] Depreciação exponencial: Calcular valor residual iterando por cada ano usando taxas `[0.20, 0.15, 0.15, 0.10, 0.10]` do § 1.1
   - For each year: `valorAtual *= (1 - taxa[ano])`
   - Depreciation = `valorInicial - valorResidual`
-- [ ] IPVA: calcular sobre o valor depreciado de cada ano (valor no início do ano × aliquota), acumular todos os anos
-- [ ] Seguro: calcular sobre o valor depreciado de cada ano (valor no início do ano × taxa), acumular todos os anos
-- [ ] Manutenção: valor fixo anual × anos completos (usar `Math.floor(analysisPeriodMonths / 12)`)
-- [ ] Custo de oportunidade: usar OpportunityCostService.calculate(carValue, anos, taxaAnual) - capital imobilizado no carro
-- [ ] Custo total = depreciacao + ipva + seguro + manutencao + custoOportunidade
-- [ ] Return `CashPurchaseResult` with totalCost and breakdown: `{ depreciacao, ipva, seguro, manutencao, custoOportunidade }` (all numbers)
+- [x] IPVA: calcular sobre o valor depreciado de cada ano (valor no início do ano × aliquota), acumular todos os anos
+- [x] Seguro: calcular sobre o valor depreciado de cada ano (valor no início do ano × taxa), acumular todos os anos
+- [x] Manutenção: valor fixo anual × anos completos (usar `Math.floor(analysisPeriodMonths / 12)`)
+- [x] Custo de oportunidade: usar OpportunityCostService.calculate(carValue, anos, taxaAnual) - capital imobilizado no carro
+- [x] Custo total = Preço de Compra - Depreciação + IPVA + Seguro + Manutenção + Custo de Oportunidade (per § 1)
+- [x] Return `CashPurchaseResult` with totalCost and breakdown: `{ depreciacao, ipva, seguro, manutencao, custoOportunidade }` (all numbers)
+- [x] Method signature: `calculate(input: CalculationInput): CashPurchaseResult` (per architecture)
 
 **Reference:** `.cursor/rules/financial-formulas.md` § 1 (Compra à Vista), § 1.1 (taxas), § 1.2 (custo de oportunidade)
 
-**Important:** Convert months to years: `anos = Math.floor(analysisPeriodMonths / 12)`. Use years for depreciation iteration. For partial years, prorate costs proportionally.
+**Important:** Convert months to years: `anos = Math.floor(analysisPeriodMonths / 12)`. Use years for depreciation iteration. Partial years: only complete years are counted (proration not implemented).
 
 **Constraint:** Service must be pure (no HTTP, no side effects).
 
-**Status:** Not started
+**Status:** ✅ Complete
 
 ---
 
-## Phase 5: Backend – Financed Purchase Service
+## Phase 5: Backend – Financed Purchase Service ✅
 
 **Goal:** Implement financed purchase cost calculation (Sistema Price).
 
 **Before starting:** Read `.cursor/rules/financial-formulas.md` § 2 (Compra Financiada).
 
 **Tasks:**
-- [ ] Create `backend/src/application/services/financed-purchase.service.ts`
-- [ ] Constructor: inject OpportunityCostService (for down payment opportunity cost)
-- [ ] Calcular entrada = carValue × downPaymentPercent
-- [ ] Calcular valorFinanciado = carValue - entrada
-- [ ] Implementar cálculo da parcela usando Sistema Price (fórmula § 2.1):
+- [x] Create `backend/src/application/services/financed-purchase.service.ts`
+- [x] Constructor: inject OpportunityCostService (for down payment opportunity cost)
+- [x] Calcular entrada = carValue × downPaymentPercent
+- [x] Calcular valorFinanciado = carValue - entrada
+- [x] Implementar cálculo da parcela usando Sistema Price (fórmula § 2.1):
   - `PMT = PV × [i × (1 + i)^n] / [(1 + i)^n - 1]`
   - Where: PV = valorFinanciado, i = interestRateMonth, n = financingTermMonths
-- [ ] Calcular totalParcelas = parcela × financingTermMonths
-- [ ] Calcular totalJuros = totalParcelas - valorFinanciado
-- [ ] Calcular custos de propriedade (IPVA, seguro, manutenção): reutilizar lógica de depreciação exponencial do cash-purchase
+- [x] Calcular totalParcelas = parcela × min(analysisPeriodMonths, financingTermMonths)
+- [x] Calcular totalJuros (full term: totalParcelas - valorFinanciado; partial: proportional)
+- [x] Calcular custos de propriedade (IPVA, seguro, manutenção): reutilizar lógica de depreciação exponencial do cash-purchase
   - Use mesmas taxas `[0.20, 0.15, 0.15, 0.10, 0.10]` para valor depreciado
   - IPVA e seguro sobre valor depreciado por ano
   - Manutenção como fixo anual
-- [ ] Calcular custo de oportunidade: OpportunityCostService.calculate(entrada, anos, taxaAnual) - apenas sobre a entrada
-- [ ] Custo total = totalParcelas + ipva + seguro + manutencao + custoOportunidade (sem incluir depreciação no total, pois já está implícito no financiamento)
-- [ ] Return `FinancedPurchaseResult` with totalCost, parcela, totalJuros, and breakdown: `{ totalParcelas, totalJuros, ipva, seguro, manutencao, custoOportunidade }` (all numbers)
+- [x] Calcular custo de oportunidade: OpportunityCostService.calculate(entrada, anos) - apenas sobre a entrada
+- [x] Custo total = entrada + totalParcelas + ipva + seguro + manutencao + depreciacao + custoOportunidade (per § 2)
+- [x] Return `FinancedPurchaseResult` with totalCost, parcela, totalJuros, and breakdown: `{ totalParcelas, totalJuros, ipva, seguro, manutencao, custoOportunidade }` (all numbers)
+- [x] Method signature: `calculate(input: CalculationInput): FinancedPurchaseResult`
 
 **Reference:** `.cursor/rules/financial-formulas.md` § 2 (Compra Financiada), § 2.1 (Sistema Price)
 
@@ -144,7 +170,7 @@ Requirements are documented in README, cursor rules (`.cursor/rules/`), and this
 
 **Constraint:** Service must be pure (no HTTP, no side effects).
 
-**Status:** Not started
+**Status:** ✅ Complete
 
 ---
 

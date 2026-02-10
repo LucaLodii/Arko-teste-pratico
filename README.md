@@ -121,60 +121,60 @@ The application will open at `http://localhost:5173`
 ```
 Arko-teste-pratico/
 ├── README.md                      # This file
+├── PHASES.md                      # Development phases and progress
+├── PROJECT.md                     # Project summary
 ├── .node-version                  # Node.js version (22)
 │
 ├── frontend/                      # React + TypeScript + Vite
 │   ├── src/
-│   │   ├── components/           # Reusable UI components
-│   │   ├── services/             # API communication
-│   │   ├── types/                # TypeScript interfaces
-│   │   ├── utils/                # Helper functions
+│   │   ├── components/           # Reusable UI components (to be added)
+│   │   ├── services/             # API communication (to be added)
+│   │   ├── types/                # TypeScript interfaces (to be added)
+│   │   ├── utils/                # Helper functions (to be added)
 │   │   ├── App.tsx               # Main application component
 │   │   └── main.tsx              # Application entry point
 │   ├── package.json
 │   ├── vite.config.ts
 │   └── tsconfig.json
 │
-└── backend/                       # Node.js + Express + TypeScript
-    ├── src/
-    │   ├── controllers/          # Request handlers
-    │   ├── services/             # Business logic & calculations
-    │   ├── validators/           # Input validation schemas
-    │   ├── types/                # TypeScript interfaces
-    │   ├── routes/               # API route definitions
-    │   └── index.ts              # Server entry point
-    ├── package.json
-    └── tsconfig.json
+├── backend/                       # Node.js + Express + TypeScript
+│   ├── src/
+│   │   ├── domain/
+│   │   │   └── types/            # CalculationInput, CashPurchaseResult, etc.
+│   │   ├── application/
+│   │   │   └── services/         # OpportunityCostService, CashPurchaseService, FinancedPurchaseService
+│   │   └── index.ts              # Server entry point (health check)
+│   ├── package.json
+│   └── tsconfig.json
+│
+└── .cursor/rules/                 # AI context (architecture, formulas, standards)
 ```
 
 ---
 
 ## 🧮 Calculation Methodology
 
-### Financial Calculations Include:
+### Financial Calculations (Backend Services)
 
-1. **Cash Purchase Total Cost:**
-   - Initial vehicle price
-   - Depreciation over time
-   - Maintenance costs
-   - Insurance and taxes (IPVA)
-   - Opportunity cost (lost investment returns)
+1. **Cash Purchase** (`CashPurchaseService`):
+   - Total cost = Preço de Compra - Depreciação + IPVA + Seguro + Manutenção + Custo de Oportunidade
+   - Exponential depreciation [20%, 15%, 15%, 10%, 10%] per year
+   - IPVA and insurance on depreciated value per year
+   - Opportunity cost on full car value (Selic 13.75% default)
 
-2. **Financed Purchase Total Cost:**
-   - Down payment
-   - Monthly installments with interest
-   - Total interest paid
-   - Depreciation, maintenance, insurance, taxes
-   - Opportunity cost of down payment
+2. **Financed Purchase** (`FinancedPurchaseService`):
+   - Total cost = Entrada + Total Parcelas + IPVA + Seguro + Manutenção + Depreciação + Custo de Oportunidade
+   - Sistema Price for monthly installments
+   - Ownership costs same as cash (depreciation, IPVA, insurance, maintenance)
+   - Opportunity cost on down payment only
 
-3. **Rental Total Cost:**
-   - Monthly rental fee × duration
-   - Insurance (if not included)
-   - No depreciation or opportunity cost concerns
+3. **Rental** (`RentalService` – Phase 6):
+   - Total cost = monthlyRent × analysisPeriodMonths
+   - No depreciation or opportunity cost
 
-4. **Break-Even Analysis:**
-   - Point in time where ownership becomes cheaper than renting
-   - Graphical representation of all three scenarios
+4. **Break-Even** (`BreakEvenService` – Phase 7):
+   - Month when rental cost equals cash purchase cost
+   - Month when rental cost equals financed purchase cost
 
 ---
 
