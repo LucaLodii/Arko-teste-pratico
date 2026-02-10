@@ -17,6 +17,7 @@ Requirements are documented in README, cursor rules (`.cursor/rules/`), and this
 - Use exponential depreciation with rates [0.20, 0.15, 0.15, 0.10, 0.10] for realistic vehicle depreciation.
 - IPVA and insurance are calculated on depreciated value per year, not original value.
 - Opportunity cost applies to: full car value (cash purchase) OR down payment only (financed purchase).
+- Update Swagger spec (`backend/src/swagger.yaml`) whenever API contracts change (new endpoints, changed request/response schemas).
 
 ---
 
@@ -272,6 +273,8 @@ CalculationInput
 
 **Reference:** `.cursor/rules/architecture.md` (adapters), `.cursor/rules/financial-formulas.md` (defaults)
 
+**Note:** When DTOs change, update `backend/src/swagger.yaml` schemas to match. DTOs define the API contract.
+
 **Status:** ✅ Complete
 
 ---
@@ -295,6 +298,11 @@ CalculationInput
 **Reference:** `.cursor/rules/architecture.md` (controllers section, data flow)
 
 **Constraint:** Do NOT put business logic in the controller. Only: validate, call use case, format response.
+
+**Important:** After adding or modifying endpoints, update `backend/src/swagger.yaml`:
+- Add new paths for new endpoints
+- Update request/response schemas for modified endpoints
+- Keep HTTP methods, status codes, and error responses documented
 
 **Status:** ✅ Complete
 
@@ -565,6 +573,26 @@ CalculationInput
 - [ ] Reference: README "Deployment" section
 
 **Status:** Not started
+
+---
+
+## API Documentation Maintenance
+
+**Swagger Spec Location:** `backend/src/swagger.yaml`
+
+**When to update:**
+- ✅ New endpoint added → Add path definition with parameters, request body, responses
+- ✅ Endpoint modified → Update the path definition (changed parameters, request/response)
+- ✅ Request/response DTO changed → Update corresponding schema in `components/schemas`
+- ✅ New error responses → Add response codes and schemas
+- ✅ Query/path parameters changed → Update parameter definitions
+
+**When you don't need to update:**
+- ❌ Internal refactoring (no API contract change)
+- ❌ Frontend-only changes
+- ❌ Bug fixes that don't change the API contract
+
+**Access the docs:** Start backend and visit `http://localhost:3000/api-docs`
 
 ---
 

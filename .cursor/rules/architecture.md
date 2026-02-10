@@ -97,6 +97,53 @@ HTTP Response (JSON)
    - Injeta dependências
    - Conecta routes → controllers → use cases
 
+### 📚 API Documentation
+
+**Tool:** Swagger UI (via swagger-ui-express)
+
+**Spec Location:** `backend/src/swagger.yaml` (OpenAPI 3.0 format)
+
+**Access:** `http://localhost:3000/api-docs` when server is running
+
+#### Update Policy
+
+**CRITICAL:** Swagger spec must stay in sync with the actual API.
+
+**Update the spec whenever:**
+1. Adding a new endpoint → Add path definition with all parameters and responses
+2. Changing request/response DTOs → Update corresponding schemas in `components/schemas`
+3. Adding new validation rules → Reflect in schema constraints (min, max, required, etc.)
+4. Changing error responses → Update response definitions
+
+**Workflow:**
+1. Make code changes (DTOs, controllers, routes)
+2. Update `swagger.yaml` to match
+3. Restart server and verify at `/api-docs` that changes appear correctly
+4. Test "Try it out" functionality for modified endpoints
+
+**Schema Mapping:**
+- `CalculationRequestDto` → `components/schemas/CalculationInput`
+- `CalculationResponseDto` → `components/schemas/CalculationResponse`
+- Nested types → Separate schemas with `$ref` references
+
+**Example:**
+```yaml
+paths:
+  /api/calculate:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CalculationInput'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalculationResponse'
+```
+
 ### 🎯 Implementation Guidelines
 
 #### Controllers

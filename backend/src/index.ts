@@ -5,8 +5,12 @@
  * Reference: .cursor/rules/architecture.md (Infrastructure section)
  */
 
+import fs from "fs";
+import path from "path";
 import cors from "cors";
 import express from "express";
+import swaggerUi from "swagger-ui-express";
+import YAML from "yaml";
 import { OpportunityCostService } from "./application/services/opportunity-cost.service";
 import { CashPurchaseService } from "./application/services/cash-purchase.service";
 import { FinancedPurchaseService } from "./application/services/financed-purchase.service";
@@ -21,6 +25,12 @@ const PORT = process.env.PORT ?? 3000;
 
 app.use(cors({ origin: process.env.FRONTEND_URL || "*" }));
 app.use(express.json());
+
+// Swagger API docs
+const swaggerPath = path.resolve(process.cwd(), "src", "swagger.yaml");
+const swaggerFile = fs.readFileSync(swaggerPath, "utf8");
+const swaggerDocument = YAML.parse(swaggerFile);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Dependency injection: services
 const opportunityCostService = new OpportunityCostService();

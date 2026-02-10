@@ -225,7 +225,7 @@ GET /api/health
 Response: { "status": "ok" }
 ```
 
-### Calculate Comparison (To Be Implemented - Phase 10)
+### Calculate Comparison
 ```
 POST /api/calculate
 Body: {
