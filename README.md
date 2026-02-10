@@ -140,9 +140,10 @@ Arko-teste-pratico/
 ├── backend/                       # Node.js + Express + TypeScript
 │   ├── src/
 │   │   ├── domain/
-│   │   │   └── types/            # CalculationInput, CashPurchaseResult, etc.
+│   │   │   └── types/            # CalculationInput, CalculationResponse, etc.
 │   │   ├── application/
-│   │   │   └── services/         # OpportunityCostService, CashPurchaseService, FinancedPurchaseService
+│   │   │   ├── services/         # OpportunityCost, CashPurchase, FinancedPurchase, Rental, BreakEven
+│   │   │   └── use-cases/        # CalculateComparisonUseCase
 │   │   └── index.ts              # Server entry point (health check)
 │   ├── package.json
 │   └── tsconfig.json
@@ -224,24 +225,26 @@ GET /api/health
 Response: { "status": "ok" }
 ```
 
-### Calculate Comparison (To Be Implemented)
+### Calculate Comparison (To Be Implemented - Phase 10)
 ```
 POST /api/calculate
 Body: {
   carValue: number,
   monthlyRent: number,
-  interestRate: number,
-  financingTerm: number,
-  maintenanceCost: number,
-  insurance: number,
-  ipva: number,
-  depreciationRate: number
+  interestRateMonth: number,
+  financingTermMonths: number,
+  analysisPeriodMonths: number,
+  downPaymentPercent?: number,
+  maintenanceAnnual?: number,
+  insuranceRateAnnual?: number,
+  ipvaRate?: number,
+  depreciationRate?: number[]
 }
 Response: {
-  cashPurchase: {...},
-  financedPurchase: {...},
-  rental: {...},
-  breakEvenPoint: number
+  cashPurchase: { totalCost, breakdown },
+  financedPurchase: { totalCost, parcela, totalJuros, breakdown },
+  rental: { totalCost, monthlyCost },
+  breakEven: { breakEvenCashMonths, breakEvenFinancedMonths }
 }
 ```
 

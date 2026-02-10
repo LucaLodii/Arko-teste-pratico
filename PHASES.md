@@ -20,9 +20,9 @@ Requirements are documented in README, cursor rules (`.cursor/rules/`), and this
 
 ---
 
-## Implementation Summary (Phases 1–5)
+## Implementation Summary (Phases 1–8)
 
-**Data flow:** `CalculationInput` → Services → `*Result` types
+**Data flow:** `CalculationInput` → Services → `*Result` types → Use Case → `CalculationResponse`
 
 ```
 CalculationInput
@@ -35,12 +35,19 @@ CalculationInput
       ├──► FinancedPurchaseService.calculate(input) → FinancedPurchaseResult { totalCost, parcela, totalJuros, breakdown }
       │         └── injects OpportunityCostService (down payment only)
       │
-      └──► RentalService.calculate(input) → RentalResult (Phase 6)
+      ├──► RentalService.calculate(input) → RentalResult { totalCost, monthlyCost }
+      │         └── no dependencies
+      │
+      ├──► BreakEvenService.calculate(input) → BreakEvenResult { breakEvenCashMonths, breakEvenFinancedMonths }
+      │         └── injects CashPurchaseService, FinancedPurchaseService, RentalService
+      │
+      └──► CalculateComparisonUseCase.execute(input) → CalculationResponse
+                 └── injects CashPurchaseService, FinancedPurchaseService, RentalService, BreakEvenService
 ```
 
 **Shared defaults:** Depreciation rates [0.20, 0.15, 0.15, 0.10, 0.10], maintenance R$ 2,000/year, insurance 6%, IPVA 4%. Cash and Financed services use identical depreciation logic for ownership costs.
 
-**Next phases:** Phase 6 (RentalService), Phase 7 (BreakEvenService orchestrates cash/financed/rental), Phase 8 (CalculateComparisonUseCase aggregates all).
+**Next phases:** Phase 9 (DTOs and Zod validation), Phase 10 (Controller and routes).
 
 ---
 
@@ -174,25 +181,25 @@ CalculationInput
 
 ---
 
-## Phase 6: Backend – Rental Service
+## Phase 6: Backend – Rental Service ✅
 
 **Goal:** Implement rental cost calculation (simplest service).
 
 **Tasks:**
-- [ ] Create `backend/src/application/services/rental.service.ts`
-- [ ] Class-based service: `export class RentalService`
-- [ ] Method: `calculate(input: CalculationInput): RentalResult`
-- [ ] Implementation: `totalCost = monthlyRent × analysisPeriodMonths`
-- [ ] Return `RentalResult` with:
+- [x] Create `backend/src/application/services/rental.service.ts`
+- [x] Class-based service: `export class RentalService`
+- [x] Method: `calculate(input: CalculationInput): RentalResult`
+- [x] Implementation: `totalCost = monthlyRent × analysisPeriodMonths`
+- [x] Return `RentalResult` with:
   - `totalCost`: total cost over the entire period
   - `monthlyCost`: same as input.monthlyRent (constant monthly cost)
-- [ ] No dependencies (no constructor injection needed)
+- [x] No dependencies (no constructor injection needed)
 
 **Reference:** `.cursor/rules/financial-formulas.md` § 3 (Aluguel)
 
 **Note:** This is the simplest service - rental has no ownership costs, depreciation, or opportunity cost.
 
-**Status:** Not started
+**Status:** ✅ Complete
 
 ---
 
@@ -203,10 +210,10 @@ CalculationInput
 **Before starting:** Read `.cursor/rules/financial-formulas.md` § 4 and § 1–3 for cost structure.
 
 **Tasks:**
-- [ ] Create `backend/src/application/services/break-even.service.ts`
-- [ ] Constructor: inject CashPurchaseService, FinancedPurchaseService, RentalService (dependency injection per architecture)
-- [ ] Method signature: `calculate(input: CalculationInput): BreakEvenResult`
-- [ ] Algoritmo:
+- [x] Create `backend/src/application/services/break-even.service.ts`
+- [x] Constructor: inject CashPurchaseService, FinancedPurchaseService, RentalService (dependency injection per architecture)
+- [x] Method signature: `calculate(input: CalculationInput): BreakEvenResult`
+- [x] Algoritmo:
   - Para cada mês N de 1 até analysisPeriodMonths:
     - Criar novo input com `analysisPeriodMonths: N`
     - Chamar cashService.calculate(inputN) para obter cashCost acumulado até mês N
@@ -214,13 +221,13 @@ CalculationInput
     - Chamar rentalService.calculate(inputN) para obter rentalCost acumulado até mês N
   - Encontrar breakEvenCashMonths: primeiro mês onde rentalCost >= cashCost (ou null se nunca atingir)
   - Encontrar breakEvenFinancedMonths: primeiro mês onde rentalCost >= financedCost (ou null se nunca atingir)
-- [ ] Return `BreakEvenResult` with `{ breakEvenCashMonths, breakEvenFinancedMonths }` (both number | null)
+- [x] Return `BreakEvenResult` with `{ breakEvenCashMonths, breakEvenFinancedMonths }` (both number | null)
 
 **Reference:** `.cursor/rules/financial-formulas.md` § 4 (Break-Even Point)
 
 **Note:** This service orchestrates the other three services to find the crossover points over time.
 
-**Status:** Not started
+**Status:** ✅ Complete
 
 ---
 
@@ -229,20 +236,20 @@ CalculationInput
 **Goal:** Orchestrate all services and return unified result.
 
 **Tasks:**
-- [ ] Create `backend/src/application/use-cases/calculate-comparison.use-case.ts`
-- [ ] Constructor: inject CashPurchaseService, FinancedPurchaseService, RentalService, BreakEvenService (all four services)
-- [ ] Method: `execute(input: CalculationInput): CalculationResponse`
-- [ ] Implementation:
+- [x] Create `backend/src/application/use-cases/calculate-comparison.use-case.ts`
+- [x] Constructor: inject CashPurchaseService, FinancedPurchaseService, RentalService, BreakEvenService (all four services)
+- [x] Method: `execute(input: CalculationInput): CalculationResponse`
+- [x] Implementation:
   - Call `cashPurchase = cashService.calculate(input)`
   - Call `financedPurchase = financedService.calculate(input)`
   - Call `rental = rentalService.calculate(input)`
   - Call `breakEven = breakEvenService.calculate(input)` (services already injected in BreakEvenService constructor)
   - Aggregate and return: `{ cashPurchase, financedPurchase, rental, breakEven }`
-- [ ] Return type must match `CalculationResponse` from domain types
+- [x] Return type must match `CalculationResponse` from domain types
 
 **Reference:** `.cursor/rules/architecture.md` (application layer, use case example)
 
-**Status:** Not started
+**Status:** ✅ Complete
 
 ---
 
