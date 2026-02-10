@@ -12,6 +12,11 @@ Requirements are documented in README, cursor rules (`.cursor/rules/`), and this
 - Always read referenced docs before implementing.
 - Types/domain first (Phase 2), then services, then adapters.
 - Keep services pure (no HTTP, no side effects).
+- All calculation services receive `CalculationInput` and extract needed fields internally for consistency.
+- Follow dependency injection: services inject dependencies via constructor.
+- Use exponential depreciation with rates [0.20, 0.15, 0.15, 0.10, 0.10] for realistic vehicle depreciation.
+- IPVA and insurance are calculated on depreciated value per year, not original value.
+- Opportunity cost applies to: full car value (cash purchase) OR down payment only (financed purchase).
 
 ---
 
@@ -37,19 +42,21 @@ Requirements are documented in README, cursor rules (`.cursor/rules/`), and this
 **Goal:** Define TypeScript types/interfaces for calculation input and output. No logic yet.
 
 **Tasks:**
-- [ ] Create `backend/src/domain/types/index.ts`
-- [ ] Define `CalculationInput`: carValue, monthlyRent, interestRateMonth, financingTermMonths, analysisPeriodMonths, downPaymentPercent (optional, default 25), maintenanceAnnual (optional), insuranceRateAnnual (optional), ipvaRate (optional), depreciationRate (optional)
-- [ ] Define `CashPurchaseResult` (totalCost, breakdown)
-- [ ] Define `FinancedPurchaseResult` (totalCost, parcela, totalJuros, breakdown)
-- [ ] Define `RentalResult` (totalCost, monthlyCost)
-- [ ] Define `BreakEvenResult` with `breakEvenCashMonths: number | null` and `breakEvenFinancedMonths: number | null` (only this type has these fields)
-- [ ] Define `CalculationResponse`: cashPurchase, financedPurchase, rental, breakEven (BreakEvenResult)
+- [x] Create `backend/src/domain/types/index.ts`
+- [x] Define `CalculationInput`: carValue, monthlyRent, interestRateMonth, financingTermMonths, analysisPeriodMonths, downPaymentPercent (optional, default 25), maintenanceAnnual (optional), insuranceRateAnnual (optional), ipvaRate (optional), depreciationRate (optional)
+- [x] Define `CashPurchaseResult` (totalCost, breakdown)
+- [x] Define `FinancedPurchaseResult` (totalCost, parcela, totalJuros, breakdown)
+- [x] Define `RentalResult` (totalCost, monthlyCost)
+- [x] Define `BreakEvenResult` with `breakEvenCashMonths: number | null` and `breakEvenFinancedMonths: number | null` (only this type has these fields)
+- [x] Define `CalculationResponse`: cashPurchase, financedPurchase, rental, breakEven (BreakEvenResult)
 
 **Reference:** `.cursor/rules/architecture.md` (domain layer), `.cursor/rules/financial-formulas.md` (field names)
 
+**Note:** For this MVP, we use plain TypeScript interfaces instead of full entity classes or value objects. This is acceptable for a stateless calculation service. The architecture.md mentions entities/ and value-objects/ folders, but they're optional for this scope.
+
 **Constraint:** Do NOT implement any calculation logic or functions. Only types/interfaces.
 
-**Status:** Not started
+**Status:** ✅ Complete
 
 ---
 
@@ -58,16 +65,20 @@ Requirements are documented in README, cursor rules (`.cursor/rules/`), and this
 **Goal:** Implement custo de oportunidade as a reusable pure service.
 
 **Tasks:**
-- [ ] Create `backend/src/application/services/opportunity-cost.service.ts`
-- [ ] Implement `calculate(capital, years, taxaAnual)`: return number (juros compostos)
-- [ ] Use Selic default 0.1375 when taxaAnual not provided
-- [ ] Formula: montanteFinal = capital * (1 + taxaAnual)^years; return montanteFinal - capital
+- [x] Create `backend/src/application/services/opportunity-cost.service.ts`
+- [x] Class-based service: `export class OpportunityCostService`
+- [x] Method signature: `calculate(capital: number, years: number, taxaAnual?: number): number`
+- [x] Default taxa: use Selic 0.1375 (13.75%) when taxaAnual not provided
+- [x] Formula (compound interest):
+  - `montanteFinal = capital * Math.pow(1 + taxaAnual, years)`
+  - `return montanteFinal - capital` (returns only the earnings, not principal)
+- [x] Example: R$ 50,000 for 3 years at 13.75% = R$ 23,456 opportunity cost
 
 **Reference:** `.cursor/rules/financial-formulas.md` § 1.2 (Custo de Oportunidade)
 
-**Constraint:** Service must be pure (no HTTP, no I/O).
+**Constraint:** Service must be pure (no HTTP, no I/O, no side effects).
 
-**Status:** Not started
+**Status:** ✅ Complete
 
 ---
 
@@ -79,15 +90,20 @@ Requirements are documented in README, cursor rules (`.cursor/rules/`), and this
 
 **Tasks:**
 - [ ] Create `backend/src/application/services/cash-purchase.service.ts`
-- [ ] Depreciação exponencial. Usar taxas por ano do § 1.1: array `[0.20, 0.15, 0.15, 0.10, 0.10]`. IPVA e seguro sobre valor depreciado por ano.
-- [ ] Implement IPVA (valor depreciado por ano × aliquota)
-- [ ] Implement seguro (valor depreciado × taxa)
-- [ ] Implement manutenção (fixo anual × anos)
-- [ ] Use OpportunityCostService for custo de oportunidade
-- [ ] Custo total = valorCarro - valorResidual + ipva + seguro + manutencao + custoOportunidade
+- [ ] Constructor: inject OpportunityCostService
+- [ ] Depreciação exponencial: Calcular valor residual iterando por cada ano usando taxas `[0.20, 0.15, 0.15, 0.10, 0.10]` do § 1.1
+  - For each year: `valorAtual *= (1 - taxa[ano])`
+  - Depreciation = `valorInicial - valorResidual`
+- [ ] IPVA: calcular sobre o valor depreciado de cada ano (valor no início do ano × aliquota), acumular todos os anos
+- [ ] Seguro: calcular sobre o valor depreciado de cada ano (valor no início do ano × taxa), acumular todos os anos
+- [ ] Manutenção: valor fixo anual × anos completos (usar `Math.floor(analysisPeriodMonths / 12)`)
+- [ ] Custo de oportunidade: usar OpportunityCostService.calculate(carValue, anos, taxaAnual) - capital imobilizado no carro
+- [ ] Custo total = depreciacao + ipva + seguro + manutencao + custoOportunidade
 - [ ] Return `CashPurchaseResult` with totalCost and breakdown: `{ depreciacao, ipva, seguro, manutencao, custoOportunidade }` (all numbers)
 
-**Reference:** `.cursor/rules/financial-formulas.md` § 1 (Compra à Vista)
+**Reference:** `.cursor/rules/financial-formulas.md` § 1 (Compra à Vista), § 1.1 (taxas), § 1.2 (custo de oportunidade)
+
+**Important:** Convert months to years: `anos = Math.floor(analysisPeriodMonths / 12)`. Use years for depreciation iteration. For partial years, prorate costs proportionally.
 
 **Constraint:** Service must be pure (no HTTP, no side effects).
 
@@ -103,17 +119,28 @@ Requirements are documented in README, cursor rules (`.cursor/rules/`), and this
 
 **Tasks:**
 - [ ] Create `backend/src/application/services/financed-purchase.service.ts`
+- [ ] Constructor: inject OpportunityCostService (for down payment opportunity cost)
 - [ ] Calcular entrada = carValue × downPaymentPercent
 - [ ] Calcular valorFinanciado = carValue - entrada
-- [ ] Implementar `calcularParcelaPrice(valorFinanciado, taxaMensal, parcelas)` (fórmula Price)
-- [ ] Total parcelas = parcela × financingTermMonths
-- [ ] Total juros = totalParcelas - valorFinanciado
-- [ ] Somar custos de propriedade (IPVA, seguro, manutenção) – reutilizar lógica do cash ou duplicar
-- [ ] Use OpportunityCostService for custo de oportunidade da entrada
-- [ ] Return `FinancedPurchaseResult` (totalCost, parcela, totalJuros, breakdown)
-- [ ] breakdown: `{ totalParcelas, totalJuros, ipva, seguro, manutencao, custoOportunidade }` (all numbers)
+- [ ] Implementar cálculo da parcela usando Sistema Price (fórmula § 2.1):
+  - `PMT = PV × [i × (1 + i)^n] / [(1 + i)^n - 1]`
+  - Where: PV = valorFinanciado, i = interestRateMonth, n = financingTermMonths
+- [ ] Calcular totalParcelas = parcela × financingTermMonths
+- [ ] Calcular totalJuros = totalParcelas - valorFinanciado
+- [ ] Calcular custos de propriedade (IPVA, seguro, manutenção): reutilizar lógica de depreciação exponencial do cash-purchase
+  - Use mesmas taxas `[0.20, 0.15, 0.15, 0.10, 0.10]` para valor depreciado
+  - IPVA e seguro sobre valor depreciado por ano
+  - Manutenção como fixo anual
+- [ ] Calcular custo de oportunidade: OpportunityCostService.calculate(entrada, anos, taxaAnual) - apenas sobre a entrada
+- [ ] Custo total = totalParcelas + ipva + seguro + manutencao + custoOportunidade (sem incluir depreciação no total, pois já está implícito no financiamento)
+- [ ] Return `FinancedPurchaseResult` with totalCost, parcela, totalJuros, and breakdown: `{ totalParcelas, totalJuros, ipva, seguro, manutencao, custoOportunidade }` (all numbers)
 
-**Reference:** `.cursor/rules/financial-formulas.md` § 2 (Compra Financiada)
+**Reference:** `.cursor/rules/financial-formulas.md` § 2 (Compra Financiada), § 2.1 (Sistema Price)
+
+**Important:** 
+- If analysisPeriodMonths < financingTermMonths: only count parcelas paid until analysisPeriodMonths
+- If analysisPeriodMonths >= financingTermMonths: count all financingTermMonths parcelas
+- Convert months to years for ownership costs (IPVA, seguro, manutenção): `anos = Math.floor(analysisPeriodMonths / 12)`
 
 **Constraint:** Service must be pure (no HTTP, no side effects).
 
@@ -123,14 +150,21 @@ Requirements are documented in README, cursor rules (`.cursor/rules/`), and this
 
 ## Phase 6: Backend – Rental Service
 
-**Goal:** Implement rental cost calculation.
+**Goal:** Implement rental cost calculation (simplest service).
 
 **Tasks:**
 - [ ] Create `backend/src/application/services/rental.service.ts`
-- [ ] custoTotal = monthlyRent × analysisPeriodMonths
-- [ ] Return `RentalResult` (totalCost, monthlyCost)
+- [ ] Class-based service: `export class RentalService`
+- [ ] Method: `calculate(input: CalculationInput): RentalResult`
+- [ ] Implementation: `totalCost = monthlyRent × analysisPeriodMonths`
+- [ ] Return `RentalResult` with:
+  - `totalCost`: total cost over the entire period
+  - `monthlyCost`: same as input.monthlyRent (constant monthly cost)
+- [ ] No dependencies (no constructor injection needed)
 
 **Reference:** `.cursor/rules/financial-formulas.md` § 3 (Aluguel)
+
+**Note:** This is the simplest service - rental has no ownership costs, depreciation, or opportunity cost.
 
 **Status:** Not started
 
@@ -138,21 +172,27 @@ Requirements are documented in README, cursor rules (`.cursor/rules/`), and this
 
 ## Phase 7: Backend – Break-Even Service
 
-**Goal:** Calculate when rental cost equals purchase cost (cash and financed separately). Return both.
+**Goal:** Calculate when rental cost equals purchase cost (cash and financed separately). Return both break-even points.
 
 **Before starting:** Read `.cursor/rules/financial-formulas.md` § 4 and § 1–3 for cost structure.
 
 **Tasks:**
 - [ ] Create `backend/src/application/services/break-even.service.ts`
-- [ ] BreakEvenService receives CashPurchaseService, FinancedPurchaseService, RentalService, and input (constructor injection)
-- [ ] Signature: `calculate(input, cashService, financedService, rentalService): BreakEvenResult`
-- [ ] Para cada mês N de 1 até analysisPeriodMonths: chamar cashService, financedService e rentalService com `{ ...input, analysisPeriodMonths: N }` para obter custo acumulado nesse mês
-- [ ] Comparar rental vs cash: primeiro mês em que rentalCostAtN >= cashCostAtN → breakEvenCashMonths
-- [ ] Comparar rental vs financed: primeiro mês em que rentalCostAtN >= financedCostAtN → breakEvenFinancedMonths
-- [ ] Retornar null se nunca atingir equilíbrio
-- [ ] Return `BreakEvenResult` with both values
+- [ ] Constructor: inject CashPurchaseService, FinancedPurchaseService, RentalService (dependency injection per architecture)
+- [ ] Method signature: `calculate(input: CalculationInput): BreakEvenResult`
+- [ ] Algoritmo:
+  - Para cada mês N de 1 até analysisPeriodMonths:
+    - Criar novo input com `analysisPeriodMonths: N`
+    - Chamar cashService.calculate(inputN) para obter cashCost acumulado até mês N
+    - Chamar financedService.calculate(inputN) para obter financedCost acumulado até mês N
+    - Chamar rentalService.calculate(inputN) para obter rentalCost acumulado até mês N
+  - Encontrar breakEvenCashMonths: primeiro mês onde rentalCost >= cashCost (ou null se nunca atingir)
+  - Encontrar breakEvenFinancedMonths: primeiro mês onde rentalCost >= financedCost (ou null se nunca atingir)
+- [ ] Return `BreakEvenResult` with `{ breakEvenCashMonths, breakEvenFinancedMonths }` (both number | null)
 
 **Reference:** `.cursor/rules/financial-formulas.md` § 4 (Break-Even Point)
+
+**Note:** This service orchestrates the other three services to find the crossover points over time.
 
 **Status:** Not started
 
@@ -164,11 +204,15 @@ Requirements are documented in README, cursor rules (`.cursor/rules/`), and this
 
 **Tasks:**
 - [ ] Create `backend/src/application/use-cases/calculate-comparison.use-case.ts`
-- [ ] Constructor: inject CashPurchaseService, FinancedPurchaseService, RentalService, BreakEvenService
-- [ ] execute(input: CalculationInput): CalculationResponse
-- [ ] Call cashService, financedService, rentalService with input
-- [ ] Pass cashService, financedService, rentalService, and input to breakEvenService.calculate()
-- [ ] Aggregate results, return CalculationResponse
+- [ ] Constructor: inject CashPurchaseService, FinancedPurchaseService, RentalService, BreakEvenService (all four services)
+- [ ] Method: `execute(input: CalculationInput): CalculationResponse`
+- [ ] Implementation:
+  - Call `cashPurchase = cashService.calculate(input)`
+  - Call `financedPurchase = financedService.calculate(input)`
+  - Call `rental = rentalService.calculate(input)`
+  - Call `breakEven = breakEvenService.calculate(input)` (services already injected in BreakEvenService constructor)
+  - Aggregate and return: `{ cashPurchase, financedPurchase, rental, breakEven }`
+- [ ] Return type must match `CalculationResponse` from domain types
 
 **Reference:** `.cursor/rules/architecture.md` (application layer, use case example)
 
@@ -184,13 +228,16 @@ Requirements are documented in README, cursor rules (`.cursor/rules/`), and this
 - [ ] Create `backend/src/adapters/dto/calculation-request.dto.ts` (align with CalculationInput)
 - [ ] Create `backend/src/adapters/dto/calculation-response.dto.ts` (align with CalculationResponse)
 - [ ] Create `backend/src/adapters/validators/calculation-input.validator.ts` – Zod schema with explicit defaults:
-  - `maintenanceAnnual`: 2000
-  - `insuranceRateAnnual`: 0.06
-  - `ipvaRate`: 0.04
-  - `depreciationRate`: array `[0.20, 0.15, 0.15, 0.10, 0.10]` from financial-formulas § 1.1 (when not provided)
+  - Required fields: carValue, monthlyRent, interestRateMonth, financingTermMonths, analysisPeriodMonths (all positive numbers)
+  - `downPaymentPercent`: default 0.25 (25%)
+  - `maintenanceAnnual`: default 2000
+  - `insuranceRateAnnual`: default 0.06 (6%)
+  - `ipvaRate`: default 0.04 (4%)
+  - `depreciationRate`: default array `[0.20, 0.15, 0.15, 0.10, 0.10]` from financial-formulas § 1.1
+- [ ] Add validation rules: all numbers must be positive, rates between 0-1, periods in months (positive integers)
 - [ ] Export parsed/safe type from validator
 
-**Reference:** `.cursor/rules/architecture.md` (adapters)
+**Reference:** `.cursor/rules/architecture.md` (adapters), `.cursor/rules/financial-formulas.md` (defaults)
 
 **Status:** Not started
 
@@ -201,11 +248,18 @@ Requirements are documented in README, cursor rules (`.cursor/rules/`), and this
 **Goal:** HTTP layer: receive POST, validate, call use case, return JSON.
 
 **Tasks:**
-- [ ] Create `backend/src/adapters/controllers/calculation.controller.ts` – POST handler: validate body with Zod, call use case, return DTO
-- [ ] Create `backend/src/routes/calculation.routes.ts` – POST `/api/calculate` → controller
-- [ ] Error handling: Zod errors → 400 with message, other errors → 500
+- [ ] Create `backend/src/adapters/controllers/calculation.controller.ts`
+  - Class-based controller with constructor injection of CalculateComparisonUseCase
+  - Method: `async calculate(req: Request, res: Response): Promise<void>`
+  - Steps: 1) Validate req.body with Zod schema, 2) Call useCase.execute(validatedInput), 3) Return JSON response
+  - Error handling: try-catch block, Zod errors → 400 with validation details, other errors → 500 with generic message
+- [ ] Create `backend/src/routes/calculation.routes.ts`
+  - Express Router instance
+  - POST `/calculate` → controller.calculate (note: no `/api` prefix in routes, added in index.ts)
+  - Export router
+- [ ] Follow architecture pattern: controller only adapts HTTP ↔ domain, NO business logic
 
-**Reference:** `.cursor/rules/architecture.md` (controllers)
+**Reference:** `.cursor/rules/architecture.md` (controllers section, data flow)
 
 **Constraint:** Do NOT put business logic in the controller. Only: validate, call use case, format response.
 
@@ -215,13 +269,27 @@ Requirements are documented in README, cursor rules (`.cursor/rules/`), and this
 
 ## Phase 11: Backend – Wire and CORS
 
-**Goal:** Connect routes to Express and enable frontend access.
+**Goal:** Connect routes to Express and enable frontend access with dependency injection.
 
 **Tasks:**
-- [ ] In `backend/src/index.ts`: import calculation routes, `app.use('/api', calculationRoutes)`
-- [ ] Add CORS middleware: allow origin from env (e.g. `http://localhost:5173`) or `*` for dev
-- [ ] Update `backend/.env.example`: PORT, FRONTEND_URL (for CORS)
-- [ ] Manually test: `curl -X POST http://localhost:3000/api/calculate -H "Content-Type: application/json" -d '{"carValue":50000,"monthlyRent":2200,"interestRateMonth":0.015,"financingTermMonths":48,"analysisPeriodMonths":48}'`
+- [ ] Install cors: `npm install cors` and `npm install --save-dev @types/cors`
+- [ ] In `backend/src/index.ts`:
+  - Import and configure CORS middleware: `app.use(cors({ origin: process.env.FRONTEND_URL || '*' }))`
+  - Instantiate all services with proper dependency injection:
+    - `opportunityCostService = new OpportunityCostService()`
+    - `cashPurchaseService = new CashPurchaseService(opportunityCostService)`
+    - `financedPurchaseService = new FinancedPurchaseService(opportunityCostService)`
+    - `rentalService = new RentalService()`
+    - `breakEvenService = new BreakEvenService(cashPurchaseService, financedPurchaseService, rentalService)`
+    - `calculateComparisonUseCase = new CalculateComparisonUseCase(cashPurchaseService, financedPurchaseService, rentalService, breakEvenService)`
+    - `calculationController = new CalculationController(calculateComparisonUseCase)`
+  - Create routes with controller instance: `const calculationRoutes = createCalculationRoutes(calculationController)`
+  - Mount routes: `app.use('/api', calculationRoutes)`
+- [ ] Update `backend/.env.example`: add PORT=3000, FRONTEND_URL=http://localhost:5173
+- [ ] Manual test with curl: `curl -X POST http://localhost:3000/api/calculate -H "Content-Type: application/json" -d '{"carValue":50000,"monthlyRent":2200,"interestRateMonth":0.015,"financingTermMonths":48,"analysisPeriodMonths":48}'`
+- [ ] Verify response has all fields: cashPurchase, financedPurchase, rental, breakEven with correct structure
+
+**Reference:** `.cursor/rules/architecture.md` (Infrastructure section)
 
 **Status:** Not started
 
@@ -280,13 +348,24 @@ Requirements are documented in README, cursor rules (`.cursor/rules/`), and this
 
 **Tasks:**
 - [ ] Create `frontend/src/components/organisms/CalculatorForm/`
-- [ ] State for: carValue, monthlyRent, interestRateMonth, financingTermMonths, analysisPeriodMonths (use sensible defaults from financial-formulas: 50000, 2200, 0.015, 48, 48)
-- [ ] Optional collapsible "Avançado": downPaymentPercent, maintenanceAnnual, insuranceRate, ipvaRate (defaults: 25, 2000, 0.06, 0.04)
-- [ ] Compose InputField molecules, Button
-- [ ] onSubmit: call `calculationService.calculate`, pass result to parent via callback or lift state
-- [ ] Handle loading (disable button, "Calculando...") and API errors (show message)
+- [ ] Basic inputs state (always visible):
+  - carValue (default: 50000)
+  - monthlyRent (default: 2200)
+  - interestRateMonth (default: 0.015 - display as 1.5% with proper formatting)
+  - financingTermMonths (default: 48)
+  - analysisPeriodMonths (default: 48)
+- [ ] Optional collapsible "Opções Avançadas" section with:
+  - downPaymentPercent (default: 0.25 - display as 25%)
+  - maintenanceAnnual (default: 2000)
+  - insuranceRateAnnual (default: 0.06 - display as 6%)
+  - ipvaRate (default: 0.04 - display as 4%)
+- [ ] Compose InputField molecules for each field, Button for submit
+- [ ] Input type="number" with proper min/max/step attributes
+- [ ] onSubmit handler: validate, call `calculationService.calculate(input)`, pass result to parent via callback
+- [ ] Loading state: disable button and show "Calculando..." while waiting
+- [ ] Error handling: display API errors in user-friendly format
 
-**Reference:** `.cursor/rules/architecture.md` (CalculatorForm organism)
+**Reference:** `.cursor/rules/architecture.md` (organisms), financial-formulas.md (defaults)
 
 **Status:** Not started
 
@@ -294,15 +373,27 @@ Requirements are documented in README, cursor rules (`.cursor/rules/`), and this
 
 ## Phase 16: Frontend – ComparisonResults Organism
 
-**Goal:** Display comparison of cash vs financed vs rental. Show both break-even values.
+**Goal:** Display comparison of cash vs financed vs rental with break-even analysis.
 
 **Tasks:**
 - [ ] Create `frontend/src/components/organisms/ComparisonResults/`
-- [ ] Props: result (CalculationResponse) | null
-- [ ] Show totalCost for each scenario (cards or table)
-- [ ] Show both break-even values: "À vista: mês X | Financiado: mês Y" (or "N/A" when null)
-- [ ] Show optional breakdown (depreciação, juros, etc.) in expandable section or tooltips
-- [ ] Use formatters for currency
+- [ ] Props: result (CalculationResponse | null), loading (boolean), error (string | null)
+- [ ] Main display section (cards or table):
+  - Cash Purchase: totalCost formatted as currency
+  - Financed Purchase: totalCost, monthly installment (parcela), total interest paid
+  - Rental: totalCost, monthly cost
+- [ ] Break-even section (prominent display):
+  - "Aluguel vs Compra à Vista: empata no mês X" (or "Nunca empata" if null)
+  - "Aluguel vs Compra Financiada: empata no mês Y" (or "Nunca empata" if null)
+  - Add tooltips explaining what break-even means
+- [ ] Expandable breakdown sections for each scenario:
+  - Cash: depreciação, IPVA, seguro, manutenção, custo de oportunidade
+  - Financed: total parcelas, total juros, IPVA, seguro, manutenção, custo de oportunidade
+  - Rental: just total (no breakdown)
+- [ ] Use formatCurrency and formatPercent from utils/formatters.ts
+- [ ] Show loading state and errors gracefully
+
+**Reference:** domain/types/index.ts (CalculationResponse structure)
 
 **Status:** Not started
 
@@ -343,15 +434,27 @@ Requirements are documented in README, cursor rules (`.cursor/rules/`), and this
 
 **Goal:** Visual comparison of costs over time (extra que conta ponto).
 
-**Tasks:**
-- [ ] Add Recharts to frontend dependencies
-- [ ] Create `frontend/src/components/organisms/CostComparisonChart/` – line chart
-- [ ] X-axis: months (1 to analysisPeriodMonths), Y-axis: custo acumulado
-- [ ] Three lines: compra à vista, compra financiada, aluguel
-- [ ] Integrate into ComparisonResults or CalculatorPage
-- [ ] For financed: custo acumulado = entrada + parcelas até mês N + custos até mês N
+**Before starting:** This requires calling the backend multiple times with different analysisPeriodMonths values OR implementing a new endpoint that returns time-series data.
 
-**Reference:** financial-formulas.md (break-even visualization), README
+**Tasks:**
+- [ ] Add Recharts dependency: `npm install recharts`
+- [ ] Option A - Frontend calculates (simpler):
+  - Make multiple API calls with analysisPeriodMonths from 1 to max
+  - Cache original input, loop from 1 to analysisPeriodMonths calling API
+  - Aggregate totalCost for each scenario at each month
+- [ ] Option B - Backend endpoint (better):
+  - Create new endpoint `/api/calculate-timeline` that returns array of costs per month
+  - Returns: `{ month: number, cashCost: number, financedCost: number, rentalCost: number }[]`
+- [ ] Create `frontend/src/components/organisms/CostComparisonChart/`
+- [ ] Use Recharts LineChart component:
+  - X-axis: months (1 to analysisPeriodMonths)
+  - Y-axis: custo acumulado (formatted as currency)
+  - Three lines: "À Vista" (cash), "Financiado" (financed), "Aluguel" (rental)
+  - Different colors for each line, legend, tooltips with currency formatting
+- [ ] Integrate into ComparisonResults component (below the summary cards)
+- [ ] Add visual markers for break-even points if available
+
+**Reference:** financial-formulas.md § 4 (break-even visualization), README
 
 **Status:** Not started
 
@@ -362,10 +465,27 @@ Requirements are documented in README, cursor rules (`.cursor/rules/`), and this
 **Goal:** Anyone can run the project sem dor de cabeça.
 
 **Tasks:**
-- [ ] Update README if needed: install steps, run backend + frontend, env vars
-- [ ] Ensure `backend/.env.example` and `frontend/.env.example` list required vars
-- [ ] Test clean run: clone → install (front + back) → `npm run dev` both → use app
-- [ ] Add "Decisões técnicas" section to README (ou DECISIONS.md): stack, architecture, fórmulas, o que faria com mais tempo
+- [ ] Update README.md with complete documentation:
+  - Project overview and purpose
+  - Tech stack (Node 22, Express 5, React 19, TypeScript, Vite 7)
+  - Architecture overview (link to .cursor/rules/architecture.md)
+  - Installation steps: `npm install` in both backend and frontend
+  - Environment setup: copy .env.example to .env in both folders
+  - Run instructions: `npm run dev` in backend (port 3000), `npm run dev` in frontend (port 5173)
+  - API documentation: POST /api/calculate with example request/response
+- [ ] Verify `backend/.env.example` has: PORT, FRONTEND_URL
+- [ ] Create `frontend/.env.example` with: VITE_API_URL=http://localhost:3000
+- [ ] Test clean run from scratch:
+  1. Delete node_modules in both folders
+  2. Run `npm install` in backend and frontend
+  3. Copy .env.example files
+  4. Start both servers
+  5. Test form submission end-to-end
+- [ ] Add "Decisões Técnicas" section to README:
+  - Why Hexagonal Architecture (testability, separation of concerns)
+  - Why Atomic Design (component reusability, scalability)
+  - Financial formula decisions (exponential depreciation, compound interest)
+  - What would be added with more time (database persistence, user accounts, additional scenarios)
 
 **Status:** Not started
 
@@ -373,13 +493,29 @@ Requirements are documented in README, cursor rules (`.cursor/rules/`), and this
 
 ## Phase 21: Tests
 
-**Goal:** Add tests after tudo funcionando.
+**Goal:** Add tests after tudo funcionando (improves score).
 
 **Tasks:**
-- [ ] Backend: Jest + unit test for at least one service (e.g. Price formula in FinancedPurchaseService)
-- [ ] Backend: Integration test for POST /api/calculate (Supertest)
-- [ ] Frontend (optional): Vitest + test for one component (e.g. formatters or Results display)
-- [ ] Ensure `npm test` runs in backend (and frontend if added)
+- [ ] Backend: Set up Jest + TypeScript support
+  - `npm install --save-dev jest @types/jest ts-jest`
+  - Create jest.config.js with ts-jest preset
+- [ ] Backend unit tests (create `backend/src/__tests__/` folder):
+  - Test OpportunityCostService.calculate with known values
+  - Test Sistema Price formula in FinancedPurchaseService (parcela calculation)
+  - Test depreciation logic in CashPurchaseService
+  - Mock dependencies where needed (jest.mock)
+- [ ] Backend integration test:
+  - Install Supertest: `npm install --save-dev supertest @types/supertest`
+  - Test POST /api/calculate end-to-end with valid input → expect 200 and valid structure
+  - Test POST /api/calculate with invalid input → expect 400 with Zod error
+- [ ] Frontend (optional, bonus points):
+  - Vitest already configured with Vite
+  - Test formatters (formatCurrency, formatPercent)
+  - Test InputField molecule rendering
+- [ ] Update package.json scripts: `"test": "jest"` in backend, `"test": "vitest"` in frontend
+- [ ] Ensure all tests pass: `npm test` in both folders
+
+**Reference:** `.cursor/rules/architecture.md` (Testing Strategy)
 
 **Status:** Not started
 
@@ -408,3 +544,45 @@ Requirements are documented in README, cursor rules (`.cursor/rules/`), and this
 - Stick to the specified file paths; do not invent alternatives
 - Feel free to add, remove, or reorganize phases as needed
 - Keep this file updated to track your progress
+
+---
+
+## Architecture Compliance Checklist
+
+Before completing each phase, verify:
+
+**Backend Services (Phases 3-7):**
+- ✓ Services are class-based with dependency injection via constructor
+- ✓ Services receive full `CalculationInput` and extract needed fields
+- ✓ Services are pure functions (no HTTP, no I/O, no side effects)
+- ✓ Services use exponential depreciation with rates [0.20, 0.15, 0.15, 0.10, 0.10]
+- ✓ IPVA and insurance calculated on depreciated value per year
+- ✓ Opportunity cost on full car value (cash) or down payment only (financed)
+
+**Backend Application Layer (Phase 8):**
+- ✓ Use case orchestrates services via constructor-injected dependencies
+- ✓ Use case has no business logic, only coordination
+- ✓ Returns domain types directly (CalculationResponse)
+
+**Backend Adapters (Phases 9-10):**
+- ✓ Controller only adapts HTTP ↔ domain (validate, call use case, format)
+- ✓ No business logic in controller
+- ✓ Zod validation with proper defaults from financial-formulas.md
+- ✓ Error handling: Zod → 400, others → 500
+
+**Backend Infrastructure (Phase 11):**
+- ✓ Dependency injection wiring in index.ts
+- ✓ Services instantiated in correct order (dependencies first)
+- ✓ CORS configured for frontend access
+
+**Frontend Components (Phases 13-17):**
+- ✓ Atomic Design: atoms → molecules → organisms → templates/pages
+- ✓ Components follow single responsibility principle
+- ✓ State management appropriate for component level
+- ✓ Type safety with TypeScript throughout
+
+**Overall:**
+- ✓ Dependencies point inward (toward domain)
+- ✓ Domain layer has zero external dependencies
+- ✓ Type definitions match between frontend and backend
+- ✓ All defaults match financial-formulas.md specifications
