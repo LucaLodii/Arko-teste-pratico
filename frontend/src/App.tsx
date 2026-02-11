@@ -1,8 +1,8 @@
-import { CalculatorTestPage } from './components/pages/CalculatorTestPage'
+import { CalculatorPage } from './components/pages/CalculatorPage'
 import './App.css'
 
 function App() {
-  return <CalculatorTestPage />
+  return <CalculatorPage />
 }
 
 export default App

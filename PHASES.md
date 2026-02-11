@@ -445,14 +445,14 @@ CalculationInput
 **Goal:** Single page with form + results, wired into App.
 
 **Tasks:**
-- [ ] Create `frontend/src/components/pages/CalculatorPage/` or `templates/MainLayout/` + page
-- [ ] State: result (CalculationResponse | null), loading, error
-- [ ] Compose CalculatorForm + ComparisonResults
-- [ ] Pass onCalculate callback from form to update result state
-- [ ] In `App.tsx`: render CalculatorPage, basic layout (header optional)
-- [ ] Verify: run front + back, fill form, submit, see results
+- [x] Create `frontend/src/components/pages/CalculatorPage/` or `templates/MainLayout/` + page
+- [x] State: result (CalculationResponse | null), loading, error
+- [x] Compose CalculatorForm + ComparisonResults
+- [x] Pass onCalculate callback from form to update result state
+- [x] In `App.tsx`: render CalculatorPage, basic layout (header optional)
+- [x] Verify: run front + back, fill form, submit, see results
 
-**Status:** Not started
+**Status:** Complete
 
 ---
 
