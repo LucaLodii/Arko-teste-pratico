@@ -213,7 +213,9 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
     <form onSubmit={handleSubmit} className="mx-auto w-full max-w-[800px] space-y-8">
       <section>
         <div className="mb-6 flex items-center gap-3">
-          <div className="h-8 w-1 rounded-full bg-sage-400" />
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sage-500 text-sm font-bold text-white shadow-sm">
+            1
+          </div>
           <h2 className="text-h2 !text-xl md:!text-2xl">Dados Básicos</h2>
         </div>
 
@@ -297,6 +299,9 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
           aria-expanded={showAdvanced}
           aria-controls="advanced-options"
         >
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sage-500 text-xs font-bold text-white shadow-sm">
+            2
+          </div>
           <span
             className={`transition-transform duration-300 ${showAdvanced ? 'rotate-90' : 'rotate-0'}`}
           >

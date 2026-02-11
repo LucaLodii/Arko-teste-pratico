@@ -15,7 +15,11 @@ export type IconName =
   | 'adjustments'
   | 'chart-bar'
   | 'chart-pie-empty'
-  | 'email';
+  | 'email'
+  | 'search'
+  | 'trending-down'
+  | 'trending-up'
+  | 'building';
 
 export interface IconProps {
   name: IconName;
@@ -110,6 +114,38 @@ export function Icon({ name, size = 'md', className = '' }: IconProps) {
         strokeLinejoin="round"
         strokeWidth={2}
         d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+      />
+    ),
+    search: (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+      />
+    ),
+    'trending-down': (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"
+      />
+    ),
+    'trending-up': (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+      />
+    ),
+    building: (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
       />
     ),
   };
