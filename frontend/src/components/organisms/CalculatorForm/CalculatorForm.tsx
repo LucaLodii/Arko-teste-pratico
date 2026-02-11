@@ -175,10 +175,10 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
       if (error.code === 'ERR_NETWORK' || error.message?.includes('Network')) {
         errorMessage = 'Erro ao conectar com o servidor. Verifique sua conexão.';
       } else if (error.response?.status === 400) {
-        // Try to parse Zod validation errors
-        if (error.response.data?.issues) {
-          const issues = error.response.data.issues;
-          errorMessage = `Erro de validação: ${issues.map((i: any) => i.message).join(', ')}`;
+        // Try to parse validation errors (backend returns details array)
+        if (error.response.data?.details) {
+          const details = error.response.data.details;
+          errorMessage = `Erro de validação: ${details.map((d: { message: string }) => d.message).join(', ')}`;
         } else if (error.response.data?.error) {
           errorMessage = error.response.data.error;
         } else {
@@ -340,12 +340,6 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
           </div>
         )}
       </div>
-
-      {formError && (
-        <div className={styles.formError} role="alert">
-          {formError}
-        </div>
-      )}
 
       <Button
         type="submit"

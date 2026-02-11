@@ -63,7 +63,14 @@ export class FinancedPurchaseService {
       input.financingTermMonths
     );
     const totalParcelas = parcela * parcelasPagas;
-    const principalPaid = valorFinanciado * (parcelasPagas / n);
+    let principalPaid: number;
+    if (i === 0) {
+      principalPaid = valorFinanciado * (parcelasPagas / n);
+    } else {
+      const factor =
+        (Math.pow(1 + i, parcelasPagas) - 1) / (Math.pow(1 + i, n) - 1);
+      principalPaid = valorFinanciado * factor;
+    }
     const totalJuros = totalParcelas - principalPaid;
 
     // Build year-by-year values for depreciation, IPVA, and insurance

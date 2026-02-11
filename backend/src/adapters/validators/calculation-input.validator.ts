@@ -37,7 +37,7 @@ export const CalculationInputSchema = z.object({
     .default(0.25),
   maintenanceAnnual: z
     .number()
-    .positive('maintenanceAnnual must be positive')
+    .min(0, 'maintenanceAnnual must be zero or positive')
     .default(2000),
   insuranceRateAnnual: z
     .number()
