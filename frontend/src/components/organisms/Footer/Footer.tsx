@@ -11,17 +11,20 @@ export function Footer() {
       <div className="mx-auto max-w-[1200px] px-4 md:px-8">
         <div className="mb-12 grid grid-cols-1 gap-12 md:grid-cols-2">
           <div className="space-y-4">
-            <h3 className="flex items-center gap-2 text-lg font-bold text-olive-900">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-sage-100 text-sage-700">
-                <Icon name="calculator" size="sm" />
+            <h3 className="flex items-center gap-2 text-xl font-bold text-olive-900">
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-sage-100 text-sage-700">
+                <Icon name="calculator" size="md" />
               </span>
               Sobre o Projeto
             </h3>
-            <p className="max-w-md leading-relaxed text-olive-600">
-              Desenvolvido por <strong>Luca</strong> como parte de um teste prático.
-              Este projeto demonstra arquitetura limpa, separação de responsabilidades
-              e boas práticas de desenvolvimento full-stack com React, TypeScript e Express.
-            </p>
+            <div className="max-w-md space-y-2">
+              <p className="text-base leading-relaxed text-olive-600">
+                Desenvolvido por <strong>Luca</strong> como parte de um teste prático.
+              </p>
+              <p className="text-sm leading-relaxed text-olive-500">
+                Esta calculadora compara a viabilidade financeira entre alugar, comprar à vista ou financiar um carro, com análise de depreciação, custo de oportunidade e ponto de equilíbrio.
+              </p>
+            </div>
             <div className="pt-2">
               <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-olive-400">
                 Tecnologias
@@ -61,6 +64,16 @@ export function Footer() {
                 <span className="text-sm font-medium">GitHub</span>
                 <span className="rounded-full bg-olive-50 p-2 transition-colors group-hover:bg-sage-100">
                   <Icon name="github" size="md" />
+                </span>
+              </a>
+              <a
+                href="mailto:luca.lodi.ll53@gmail.com"
+                className="group flex min-h-[48px] items-center gap-3 py-3 text-olive-600 transition-colors hover:text-sage-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-sage-400 focus-visible:ring-offset-2 rounded-lg"
+                aria-label="Email"
+              >
+                <span className="text-sm font-medium">Email</span>
+                <span className="rounded-full bg-olive-50 p-2 transition-colors group-hover:bg-sage-100">
+                  <Icon name="email" size="md" />
                 </span>
               </a>
             </div>

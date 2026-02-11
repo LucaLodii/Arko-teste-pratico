@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Card, Icon, Tooltip } from '../../atoms';
+import { EmptyResultsState } from '../../molecules';
 import { CostComparisonChart } from '../CostComparisonChart';
 import { calculationService } from '../../../services/calculation.service';
 import { formatCurrency } from '../../../utils/formatters';
@@ -99,17 +100,7 @@ export function ComparisonResults({
   }
 
   if (!result) {
-    return (
-      <div className="animate-slide-down rounded-2xl border border-dashed border-olive-200 bg-white p-12 text-center">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-sage-50 text-sage-400">
-          <Icon name="info" size="xl" />
-        </div>
-        <h3 className="text-h3 text-olive-600">Aguardando Dados</h3>
-        <p className="mx-auto mt-2 max-w-md text-olive-400">
-          Preencha o formulário acima e clique em &quot;Calcular Comparação&quot; para ver a análise financeira detalhada.
-        </p>
-      </div>
-    );
+    return <EmptyResultsState />;
   }
 
   const { cashPurchase, financedPurchase, rental, breakEven } = result;

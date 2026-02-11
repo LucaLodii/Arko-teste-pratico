@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import type { FormEvent } from 'react';
 import axios from 'axios';
 import { InputField } from '../../molecules';
@@ -74,6 +74,17 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
   const [loading, setLoading] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+
+  // Check if all required fields are filled for visual feedback
+  const isFormReady = useMemo(() => {
+    return (
+      formState.carValue > 0 &&
+      formState.monthlyRent > 0 &&
+      formState.interestRateMonth > 0 &&
+      formState.financingTermMonths >= 1 &&
+      formState.analysisPeriodMonths >= 1
+    );
+  }, [formState]);
 
   const handleChange = (field: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.type === 'number' ? parseFloat(e.target.value) || 0 : e.target.value;
@@ -367,7 +378,13 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
       )}
 
       <div className="pt-4">
-        <Button type="submit" variant="primary" loading={loading} fullWidth className="text-lg shadow-lg shadow-sage-400/20">
+        <Button
+          type="submit"
+          variant="primary"
+          loading={loading}
+          fullWidth
+          className={`text-lg shadow-lg ${isFormReady && !loading ? 'animate-pulse-glow' : 'shadow-sage-400/20'}`}
+        >
           Calcular Comparação
         </Button>
       </div>

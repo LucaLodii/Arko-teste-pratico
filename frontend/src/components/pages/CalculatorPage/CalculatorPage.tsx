@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Header, Footer, CalculatorForm, ComparisonResults } from '../../organisms';
+import { Header, Footer, CalculatorForm, ComparisonResults, HowToUseCard } from '../../organisms';
 import { Card } from '../../atoms';
 import type {
   CalculationInput,
@@ -35,6 +35,10 @@ export function CalculatorPage() {
       <Header />
 
       <main className="mx-auto w-full max-w-[1200px] flex-grow space-y-12 px-4 py-8 md:px-8 md:py-12">
+        <section className="animate-slide-down">
+          <HowToUseCard defaultOpen={true} />
+        </section>
+
         <section className="animate-slide-down">
           <Card
             padding="large"
