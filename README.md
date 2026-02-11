@@ -54,7 +54,7 @@ This calculator helps users make informed financial decisions by comparing three
 - **React 19** - Modern UI library with latest features
 - **TypeScript 5** - Type safety and better developer experience
 - **Vite 7** - Fast build tool and development server
-- **Chart.js / Recharts** - Data visualization
+- **Recharts** - Data visualization
 - **ESLint** - Code quality and consistency
 
 ### Backend
@@ -138,7 +138,6 @@ The application will open at `http://localhost:5173`
 Arko-teste-pratico/
 ├── README.md                      # This file
 ├── PHASES.md                      # Development phases and progress
-├── PROJECT.md                     # Project summary
 ├── .node-version                  # Node.js version (22)
 │
 ├── frontend/                      # React 19 + TypeScript + Vite 7
