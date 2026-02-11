@@ -2,7 +2,7 @@
 
 Track progress through each phase of migrating the frontend from CSS Modules to Tailwind CSS with the design system from `GEMINI_DESIGN_PROMPT_PT-BR.md`.
 
-Requirements are documented in `GEMINI_DESIGN_PROMPT_PT-BR.md`, `GeminiResponse/` folder, and this file.
+Requirements are documented in `GEMINI_DESIGN_PROMPT_PT-BR.md` and this file.
 
 ---
 
@@ -42,7 +42,6 @@ This design migration implements the **"Interface bonita / fácil de usar"** ext
 - Preserve all existing logic and props; only replace CSS Modules with Tailwind classes.
 - The `GeminiResponse/Molecules` file duplicates Atoms content; use the corrected InputField implementation (Label + Input + Tooltip + Icon).
 - Replace `any` types with proper types from `frontend/src/types/calculation.types.ts`.
-- Keep `GeminiResponse/` folder as reference; do not delete it until migration is complete.
 
 ---
 
@@ -71,7 +70,7 @@ TailwindConfig (colors, shadows, animations)
 
 **Color palette:** Soft Sage (#ACC8A2), Deep Olive (#1A2517), scenario colors (cash, financed, rental), semantic colors (success, error, warning, info).
 
-**Reference:** `GeminiResponse/` folder contains all design implementations.
+**Reference:** Design implementations completed; `GeminiResponse/` folder was removed after migration.
 
 ---
 
@@ -280,7 +279,6 @@ TailwindConfig (colors, shadows, animations)
 - Do not skip Phase 0 (setup) or Phase 1 (fixes); they block everything else
 - Before starting a phase, read its Reference docs
 - Stick to the specified file paths; do not invent alternatives
-- Keep `GeminiResponse/` folder as reference until migration is complete
 - Feel free to add, remove, or reorganize phases as needed
 - Keep this file updated to track your progress
 
