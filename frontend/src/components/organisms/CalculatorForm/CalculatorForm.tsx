@@ -1,4 +1,5 @@
-import { useState, FormEvent } from 'react';
+import { useState } from 'react';
+import type { FormEvent } from 'react';
 import { InputField } from '../../molecules';
 import { Button } from '../../atoms';
 import { calculationService } from '../../../services/calculation.service';
@@ -11,6 +12,9 @@ export interface CalculatorFormProps {
   
   /** Optional callback when errors occur */
   onError?: (error: string) => void;
+  
+  /** Optional callback when loading state changes */
+  onLoadingChange?: (loading: boolean) => void;
   
   /** Optional initial form values */
   initialValues?: Partial<CalculationInput>;
@@ -43,7 +47,7 @@ const DEFAULT_VALUES: FormState = {
   ipvaRate: 4, // Display as 4%
 };
 
-export function CalculatorForm({ onCalculate, onError, initialValues }: CalculatorFormProps) {
+export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialValues }: CalculatorFormProps) {
   const [formState, setFormState] = useState<FormState>(() => ({
     ...DEFAULT_VALUES,
     ...(initialValues && {
@@ -160,6 +164,7 @@ export function CalculatorForm({ onCalculate, onError, initialValues }: Calculat
     };
 
     setLoading(true);
+    onLoadingChange?.(true);
 
     try {
       const result = await calculationService.calculate(calculationInput);
@@ -187,6 +192,7 @@ export function CalculatorForm({ onCalculate, onError, initialValues }: Calculat
       onError?.(errorMessage);
     } finally {
       setLoading(false);
+      onLoadingChange?.(false);
     }
   };
 

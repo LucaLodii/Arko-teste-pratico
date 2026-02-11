@@ -1,0 +1,239 @@
+.container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.cardsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .cardsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cardTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+  color: #1a1a1a;
+}
+
+.totalCost {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0.5rem 0 0;
+  color: #1a1a1a;
+}
+
+.secondaryInfo {
+  font-size: 0.875rem;
+  margin: 0.25rem 0;
+  color: #4a5568;
+}
+
+.breakdownToggle {
+  background: none;
+  border: none;
+  padding: 0.75rem 0;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4a5568;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  text-align: left;
+  transition: color 0.2s ease;
+}
+
+.breakdownToggle:hover {
+  color: #2d3748;
+}
+
+.breakdownToggle:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.breakdown {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+  animation: slideDown 0.3s ease-out;
+}
+
+.breakdownRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  font-size: 0.875rem;
+}
+
+.breakdownRow span:first-child {
+  color: #4a5568;
+}
+
+.breakdownRow span:last-child {
+  font-weight: 500;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Break-even section */
+.breakEvenSection {
+  background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+  border: 1px solid #7dd3fc;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.breakEvenTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 1rem;
+  color: #0c4a6e;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tooltipIcon {
+  cursor: help;
+  font-size: 1rem;
+}
+
+.breakEvenItems {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.breakEvenItem {
+  font-size: 1rem;
+  margin: 0;
+  color: #0c4a6e;
+  font-weight: 500;
+}
+
+/* Error state */
+.error {
+  background-color: #fee2e2;
+  border: 1px solid #ef4444;
+  border-radius: 6px;
+  padding: 1rem;
+  color: #991b1b;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* Empty state */
+.emptyState {
+  text-align: center;
+  padding: 2rem;
+  color: #4a5568;
+  font-size: 1rem;
+}
+
+/* Loading skeleton */
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.skeletonTitle {
+  height: 1.25rem;
+  width: 60%;
+  background: #e2e8f0;
+  border-radius: 4px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeletonValue {
+  height: 2rem;
+  width: 80%;
+  background: #e2e8f0;
+  border-radius: 4px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .cardTitle,
+  .totalCost {
+    color: #fafafa;
+  }
+
+  .secondaryInfo {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .breakdownToggle {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .breakdownToggle:hover {
+    color: #fafafa;
+  }
+
+  .breakdown {
+    border-top-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .breakdownRow span:first-child {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .breakEvenSection {
+    background: linear-gradient(135deg, #0c4a6e 0%, #0369a1 100%);
+    border-color: #0284c7;
+  }
+
+  .breakEvenTitle,
+  .breakEvenItem {
+    color: #e0f2fe;
+  }
+
+  .emptyState {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .skeletonTitle,
+  .skeletonValue {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}

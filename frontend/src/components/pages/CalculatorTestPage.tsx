@@ -1,25 +1,26 @@
 import { useState } from 'react';
-import { CalculatorForm } from '../organisms';
+import { CalculatorForm, ComparisonResults } from '../organisms';
 import { Card } from '../atoms';
 import type { CalculationResponse } from '../../types/calculation.types';
-import { formatCurrency } from '../../utils/formatters';
 
 /**
- * Test page for CalculatorForm component
- * This can be used to verify Phase 15 implementation
+ * Test page for CalculatorForm and ComparisonResults components
  */
 export function CalculatorTestPage() {
   const [result, setResult] = useState<CalculationResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleCalculate = (calculationResult: CalculationResponse) => {
     setResult(calculationResult);
     setError(null);
+    setLoading(false);
     console.log('Calculation result:', calculationResult);
   };
 
   const handleError = (errorMessage: string) => {
     setError(errorMessage);
+    setLoading(false);
     console.error('Calculation error:', errorMessage);
   };
 
@@ -31,66 +32,13 @@ export function CalculatorTestPage() {
         <CalculatorForm 
           onCalculate={handleCalculate} 
           onError={handleError}
+          onLoadingChange={setLoading}
         />
       </Card>
 
-      {error && (
-        <Card style={{ marginTop: '2rem', backgroundColor: '#fee2e2', border: '1px solid #ef4444' }}>
-          <h2 style={{ color: '#991b1b' }}>Erro</h2>
-          <p style={{ color: '#991b1b' }}>{error}</p>
-        </Card>
-      )}
-
-      {result && (
-        <div style={{ marginTop: '2rem' }}>
-          <h2>Resultados</h2>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', marginTop: '1rem' }}>
-            <Card>
-              <h3>Compra à Vista</h3>
-              <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
-                {formatCurrency(result.cashPurchase.totalCost)}
-              </p>
-            </Card>
-
-            <Card>
-              <h3>Compra Financiada</h3>
-              <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
-                {formatCurrency(result.financedPurchase.totalCost)}
-              </p>
-              <p style={{ fontSize: '0.875rem', color: '#666' }}>
-                Parcela: {formatCurrency(result.financedPurchase.parcela)}
-              </p>
-            </Card>
-
-            <Card>
-              <h3>Aluguel</h3>
-              <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
-                {formatCurrency(result.rental.totalCost)}
-              </p>
-              <p style={{ fontSize: '0.875rem', color: '#666' }}>
-                Mensal: {formatCurrency(result.rental.monthlyCost)}
-              </p>
-            </Card>
-          </div>
-
-          <Card style={{ marginTop: '1rem' }}>
-            <h3>Break-Even (Ponto de Equilíbrio)</h3>
-            <p>
-              <strong>Aluguel vs Compra à Vista:</strong>{' '}
-              {result.breakEven.breakEvenCashMonths !== null
-                ? `Empata no mês ${result.breakEven.breakEvenCashMonths}`
-                : 'Nunca empata no período analisado'}
-            </p>
-            <p>
-              <strong>Aluguel vs Compra Financiada:</strong>{' '}
-              {result.breakEven.breakEvenFinancedMonths !== null
-                ? `Empata no mês ${result.breakEven.breakEvenFinancedMonths}`
-                : 'Nunca empata no período analisado'}
-            </p>
-          </Card>
-        </div>
-      )}
+      <div style={{ marginTop: '2rem' }}>
+        <ComparisonResults result={result} loading={loading} error={error} />
+      </div>
     </div>
   );
 }

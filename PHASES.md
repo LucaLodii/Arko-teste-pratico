@@ -417,26 +417,26 @@ CalculationInput
 **Goal:** Display comparison of cash vs financed vs rental with break-even analysis.
 
 **Tasks:**
-- [ ] Create `frontend/src/components/organisms/ComparisonResults/`
-- [ ] Props: result (CalculationResponse | null), loading (boolean), error (string | null)
-- [ ] Main display section (cards or table):
+- [x] Create `frontend/src/components/organisms/ComparisonResults/`
+- [x] Props: result (CalculationResponse | null), loading (boolean), error (string | null)
+- [x] Main display section (cards or table):
   - Cash Purchase: totalCost formatted as currency
   - Financed Purchase: totalCost, monthly installment (parcela), total interest paid
   - Rental: totalCost, monthly cost
-- [ ] Break-even section (prominent display):
+- [x] Break-even section (prominent display):
   - "Aluguel vs Compra à Vista: empata no mês X" (or "Nunca empata" if null)
   - "Aluguel vs Compra Financiada: empata no mês Y" (or "Nunca empata" if null)
   - Add tooltips explaining what break-even means
-- [ ] Expandable breakdown sections for each scenario:
+- [x] Expandable breakdown sections for each scenario:
   - Cash: depreciação, IPVA, seguro, manutenção, custo de oportunidade
   - Financed: total parcelas, total juros, IPVA, seguro, manutenção, custo de oportunidade
   - Rental: just total (no breakdown)
-- [ ] Use formatCurrency and formatPercent from utils/formatters.ts
-- [ ] Show loading state and errors gracefully
+- [x] Use formatCurrency and formatPercent from utils/formatters.ts
+- [x] Show loading state and errors gracefully
 
 **Reference:** domain/types/index.ts (CalculationResponse structure)
 
-**Status:** Not started
+**Status:** Complete
 
 ---
 
