@@ -54,10 +54,13 @@ This calculator helps users make informed financial decisions by comparing three
 - **ts-node** - TypeScript execution for development
 
 ### Architecture
+- **Hexagonal Architecture (Backend):** Clean separation between domain, application, and adapters layers
+- **Atomic Design (Frontend):** Component hierarchy from atoms to pages for maximum reusability
 - **Decoupled Design:** Frontend and backend are completely separate
 - **RESTful API:** Clean API design with proper HTTP methods
-- **Modular Code:** Calculation logic separated into services/utils for testability
 - **Type Safety:** Full TypeScript coverage across the stack
+
+For detailed architecture documentation, see [.cursor/rules/architecture.md](.cursor/rules/architecture.md)
 
 ---
 
@@ -81,10 +84,12 @@ cd Arko-teste-pratico
 # Install frontend dependencies
 cd frontend
 npm install
+cp .env.example .env
 
 # Install backend dependencies
 cd ../backend
 npm install
+cp .env.example .env
 ```
 
 ### Running the Application
@@ -125,26 +130,36 @@ Arko-teste-pratico/
 ├── PROJECT.md                     # Project summary
 ├── .node-version                  # Node.js version (22)
 │
-├── frontend/                      # React + TypeScript + Vite
+├── frontend/                      # React 19 + TypeScript + Vite 7
 │   ├── src/
-│   │   ├── components/           # Reusable UI components (to be added)
-│   │   ├── services/             # API communication (to be added)
-│   │   ├── types/                # TypeScript interfaces (to be added)
-│   │   ├── utils/                # Helper functions (to be added)
+│   │   ├── components/           # Atomic Design components
+│   │   │   ├── atoms/           # Button, Input, Label, Card, Icon, Spinner, Tooltip
+│   │   │   ├── molecules/       # InputField
+│   │   │   ├── organisms/       # CalculatorForm, ComparisonResults, CostComparisonChart, Header
+│   │   │   └── pages/           # CalculatorPage
+│   │   ├── services/            # API communication (api.ts, calculation.service.ts)
+│   │   ├── types/               # TypeScript interfaces (calculation.types.ts)
+│   │   ├── utils/               # Helper functions (formatters.ts)
 │   │   ├── App.tsx               # Main application component
 │   │   └── main.tsx              # Application entry point
 │   ├── package.json
 │   ├── vite.config.ts
 │   └── tsconfig.json
 │
-├── backend/                       # Node.js + Express + TypeScript
+├── backend/                       # Node.js 22 + Express 5 + TypeScript
 │   ├── src/
-│   │   ├── domain/
-│   │   │   └── types/            # CalculationInput, CalculationResponse, etc.
-│   │   ├── application/
-│   │   │   ├── services/         # OpportunityCost, CashPurchase, FinancedPurchase, Rental, BreakEven
-│   │   │   └── use-cases/        # CalculateComparisonUseCase
-│   │   └── index.ts              # Server entry point (health check)
+│   │   ├── domain/               # Core business entities
+│   │   │   └── types/           # CalculationInput, CalculationResponse, etc.
+│   │   ├── application/          # Business logic layer
+│   │   │   ├── services/        # OpportunityCost, CashPurchase, FinancedPurchase, Rental, BreakEven, Timeline
+│   │   │   └── use-cases/       # CalculateComparisonUseCase, CalculateTimelineUseCase
+│   │   ├── adapters/             # External interface layer
+│   │   │   ├── controllers/     # HTTP request handlers
+│   │   │   ├── dto/             # Data Transfer Objects
+│   │   │   └── validators/      # Input validation (Zod)
+│   │   ├── routes/              # API route definitions
+│   │   ├── swagger.yaml         # OpenAPI 3.0 specification
+│   │   └── index.ts             # Server entry point
 │   ├── package.json
 │   └── tsconfig.json
 │
@@ -219,6 +234,8 @@ npm start         # Run the compiled server
 
 ## 📋 API Endpoints
 
+> **Interactive API Documentation:** The backend includes Swagger UI for testing endpoints interactively. Start the backend server and visit [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
+
 ### Health Check
 ```
 GET /api/health
@@ -226,58 +243,101 @@ Response: { "status": "ok" }
 ```
 
 ### Calculate Comparison
-```
-POST /api/calculate
-Body: {
-  carValue: number,
-  monthlyRent: number,
-  interestRateMonth: number,
-  financingTermMonths: number,
-  analysisPeriodMonths: number,
-  downPaymentPercent?: number,
-  maintenanceAnnual?: number,
-  insuranceRateAnnual?: number,
-  ipvaRate?: number,
-  depreciationRate?: number[]
-}
-Response: {
-  cashPurchase: { totalCost, breakdown },
-  financedPurchase: { totalCost, parcela, totalJuros, breakdown },
-  rental: { totalCost, monthlyCost },
-  breakEven: { breakEvenCashMonths, breakEvenFinancedMonths }
+
+**Endpoint:** `POST /api/calculate`
+
+**Example Request:**
+```json
+{
+  "carValue": 50000,
+  "monthlyRent": 2200,
+  "interestRateMonth": 0.015,
+  "financingTermMonths": 48,
+  "analysisPeriodMonths": 48,
+  "downPaymentPercent": 0.25,
+  "maintenanceAnnual": 2000,
+  "insuranceRateAnnual": 0.06,
+  "ipvaRate": 0.04
 }
 ```
+
+**Example Response:**
+```json
+{
+  "cashPurchase": {
+    "totalCost": 83009.67,
+    "breakdown": {
+      "depreciacao": 23990,
+      "ipva": 6116,
+      "seguro": 9174,
+      "manutencao": 8000,
+      "custoOportunidade": 33709.67
+    }
+  },
+  "financedPurchase": {
+    "totalCost": 121082.42,
+    "parcela": 1101.56,
+    "totalJuros": 15375,
+    "breakdown": {
+      "totalParcelas": 52875,
+      "totalJuros": 15375,
+      "ipva": 6116,
+      "seguro": 9174,
+      "manutencao": 8000,
+      "custoOportunidade": 8427.42
+    }
+  },
+  "rental": {
+    "totalCost": 105600,
+    "monthlyCost": 2200
+  },
+  "breakEven": {
+    "breakEvenCashMonths": 29,
+    "breakEvenFinancedMonths": null
+  }
+}
+```
+
+**Schema Reference:**
+- All monetary values are in BRL (R$)
+- Interest rates are decimals (0.015 = 1.5%)
+- Percentages are decimals (0.25 = 25%)
+- Optional fields: `downPaymentPercent`, `maintenanceAnnual`, `insuranceRateAnnual`, `ipvaRate`, `depreciationRate`
 
 ---
 
-## 🎨 Design Decisions
+## Decisões Técnicas
 
-### Why This Architecture?
+### Por que Arquitetura Hexagonal?
 
-1. **Decoupled Frontend/Backend:** 
-   - Independent deployment and scaling
-   - Clear separation of concerns
-   - Easier to maintain and test
+- **Testabilidade:** Lógica de negócio isolada da infraestrutura (Express, HTTP) permite testes unitários puras nos services
+- **Separação de responsabilidades:** O domínio nunca depende de frameworks externos
+- **Flexibilidade:** Fácil trocar adapters (ex: REST → GraphQL) sem alterar o core
+- **Limites claros:** Services são funções puras, controllers apenas adaptam HTTP ↔ domínio
 
-2. **TypeScript Throughout:**
-   - Catches errors at compile time
-   - Better IDE support and autocomplete
-   - Self-documenting code with types
+### Por que Atomic Design?
 
-3. **Calculation Logic in Backend:**
-   - Centralized business logic
-   - Easier to test and validate
-   - Consistent results across clients
+- **Reutilização de componentes:** Construção do pequeno (Button) ao grande (CalculatorPage)
+- **Escalabilidade:** Fácil adicionar features compondo atoms e molecules existentes
+- **Manutenibilidade:** Cada componente tem responsabilidade única
+- **Consistência visual:** Atoms compartilhados garantem UI uniforme
 
-4. **Vite Instead of Create React App:**
-   - Faster development experience
-   - Smaller bundle sizes
-   - Better performance
+### Decisões sobre Fórmulas Financeiras
 
-5. **Input Validation with Zod/Joi:**
-   - Type-safe validation
-   - Clear error messages
-   - Prevents invalid data processing
+- **Depreciação exponencial:** Mais realista que linear (carros perdem valor mais rápido no início)
+- **Juros compostos para custo de oportunidade:** Reflete retornos reais de investimento ao longo do tempo
+- **IPVA/Seguro sobre valor depreciado:** Cálculo preciso em relação ao mercado real
+- **Sistema Price para financiamento:** Método de amortização padrão no Brasil
+
+### O que seria adicionado com mais tempo
+
+- **Persistência em banco de dados** (PostgreSQL/MongoDB) para salvar cálculos e histórico
+- **Sistema de autenticação** com JWT para experiências personalizadas
+- **Cenários adicionais:** Leasing, financiamento de seminovos, cálculo de valor de troca
+- **Testes unitários e de integração** com Jest/Vitest (estrutura já planejada)
+- **Integração com dados em tempo real:** API Tabela FIPE para valores de carros, API taxa Selic
+- **Gráficos avançados:** Evolução mês a mês, análise de sensibilidade
+- **Geração de relatório PDF** com resultados da comparação
 
 ---
 

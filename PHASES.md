@@ -502,7 +502,7 @@ CalculationInput
 **Goal:** Anyone can run the project sem dor de cabeça.
 
 **Tasks:**
-- [ ] Update README.md with complete documentation:
+- [x] Update README.md with complete documentation:
   - Project overview and purpose
   - Tech stack (Node 22, Express 5, React 19, TypeScript, Vite 7)
   - Architecture overview (link to .cursor/rules/architecture.md)
@@ -510,21 +510,21 @@ CalculationInput
   - Environment setup: copy .env.example to .env in both folders
   - Run instructions: `npm run dev` in backend (port 3000), `npm run dev` in frontend (port 5173)
   - API documentation: POST /api/calculate with example request/response
-- [ ] Verify `backend/.env.example` has: PORT, FRONTEND_URL
-- [ ] Create `frontend/.env.example` with: VITE_API_URL=http://localhost:3000
-- [ ] Test clean run from scratch:
+- [x] Verify `backend/.env.example` has: PORT, FRONTEND_URL
+- [x] Create `frontend/.env.example` with: VITE_API_URL=http://localhost:3000
+- [x] Test clean run from scratch:
   1. Delete node_modules in both folders
   2. Run `npm install` in backend and frontend
   3. Copy .env.example files
   4. Start both servers
   5. Test form submission end-to-end
-- [ ] Add "Decisões Técnicas" section to README:
+- [x] Add "Decisões Técnicas" section to README:
   - Why Hexagonal Architecture (testability, separation of concerns)
   - Why Atomic Design (component reusability, scalability)
   - Financial formula decisions (exponential depreciation, compound interest)
   - What would be added with more time (database persistence, user accounts, additional scenarios)
 
-**Status:** Not started
+**Status:** Complete
 
 ---
 
