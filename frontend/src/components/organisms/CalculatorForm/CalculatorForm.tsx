@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import type { FormEvent } from 'react';
 import axios from 'axios';
 import { InputField } from '../../molecules';
@@ -74,6 +74,17 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
   const [loading, setLoading] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+
+  // Check if all required fields are filled for visual feedback
+  const isFormReady = useMemo(() => {
+    return (
+      formState.carValue > 0 &&
+      formState.monthlyRent > 0 &&
+      formState.interestRateMonth > 0 &&
+      formState.financingTermMonths >= 1 &&
+      formState.analysisPeriodMonths >= 1
+    );
+  }, [formState]);
 
   const handleChange = (field: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.type === 'number' ? parseFloat(e.target.value) || 0 : e.target.value;
@@ -202,7 +213,9 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
     <form onSubmit={handleSubmit} className="mx-auto w-full max-w-[800px] space-y-8">
       <section>
         <div className="mb-6 flex items-center gap-3">
-          <div className="h-8 w-1 rounded-full bg-sage-400" />
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sage-500 text-sm font-bold text-white shadow-sm">
+            1
+          </div>
           <h2 className="text-h2 !text-xl md:!text-2xl">Dados Básicos</h2>
         </div>
 
@@ -286,6 +299,9 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
           aria-expanded={showAdvanced}
           aria-controls="advanced-options"
         >
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sage-500 text-xs font-bold text-white shadow-sm">
+            2
+          </div>
           <span
             className={`transition-transform duration-300 ${showAdvanced ? 'rotate-90' : 'rotate-0'}`}
           >
@@ -367,7 +383,13 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
       )}
 
       <div className="pt-4">
-        <Button type="submit" variant="primary" loading={loading} fullWidth className="text-lg shadow-lg shadow-sage-400/20">
+        <Button
+          type="submit"
+          variant="primary"
+          loading={loading}
+          fullWidth
+          className={`text-lg shadow-lg ${isFormReady && !loading ? 'animate-pulse-glow' : 'shadow-sage-400/20'}`}
+        >
           Calcular Comparação
         </Button>
       </div>

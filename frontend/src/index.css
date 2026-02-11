@@ -19,15 +19,19 @@ body {
   .text-h1 {
     @apply text-3xl md:text-4xl font-bold text-olive-900 tracking-tight leading-tight;
   }
+
   .text-h2 {
     @apply text-2xl md:text-3xl font-semibold text-olive-900 tracking-tight;
   }
+
   .text-h3 {
     @apply text-lg md:text-xl font-medium text-olive-800;
   }
+
   .text-body {
     @apply text-base text-olive-700 leading-relaxed;
   }
+
   .text-small {
     @apply text-sm text-olive-500;
   }
@@ -36,6 +40,7 @@ body {
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
+
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -45,4 +50,73 @@ body {
 #root {
   width: 100%;
   min-height: 100vh;
+}
+
+/* Animações para User Guidance */
+@keyframes slideDownContent {
+  from {
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    max-height: 500px;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGlow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(132, 169, 140, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 30px rgba(132, 169, 140, 0.6);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pulseSlow {
+
+  0%,
+  100% {
+    opacity: 0.1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.15;
+    transform: scale(1.05);
+  }
+}
+
+@layer utilities {
+  .animate-slide-down-content {
+    animation: slideDownContent 0.3s ease-out forwards;
+  }
+
+  .animate-pulse-glow {
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-in;
+  }
+
+  .animate-pulse-slow {
+    animation: pulseSlow 8s ease-in-out infinite;
+  }
 }
