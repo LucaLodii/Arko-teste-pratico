@@ -26,8 +26,11 @@ export function createApp(): express.Application {
   const app = express();
 
   // CORS: allow comma-separated FRONTEND_URL for multiple envs (staging + production)
-  const allowedOrigins = process.env.FRONTEND_URL?.split(',').map((o) => o.trim()) || ['*'];
-  app.use(cors({ origin: allowedOrigins }));
+  // When FRONTEND_URL is unset, use origin: true (allow all). Using ['*'] fails because
+  // cors treats array elements as literals—'*' in array does not mean wildcard.
+  const allowedOrigins = process.env.FRONTEND_URL?.split(',').map((o) => o.trim()).filter(Boolean);
+  const corsOrigin = allowedOrigins?.length ? allowedOrigins : true;
+  app.use(cors({ origin: corsOrigin }));
   app.use(express.json());
 
   // Swagger API docs

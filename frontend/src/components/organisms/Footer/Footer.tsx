@@ -40,7 +40,7 @@ export function Footer() {
             <h3 className="mb-4 text-lg font-bold text-olive-900">Contato</h3>
             <div className="flex flex-col gap-3 md:items-end">
               <a
-                href="https://www.linkedin.com/in/seu-linkedin"
+                href="https://www.linkedin.com/in/luca-guimarães-lodi-752981356/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group flex min-h-[48px] items-center gap-3 py-3 text-olive-600 transition-colors hover:text-sage-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-sage-400 focus-visible:ring-offset-2 rounded-lg"
@@ -52,7 +52,7 @@ export function Footer() {
                 </span>
               </a>
               <a
-                href="https://github.com/seu-usuario"
+                href="https://github.com/LucaLodii"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group flex min-h-[48px] items-center gap-3 py-3 text-olive-600 transition-colors hover:text-sage-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-sage-400 focus-visible:ring-offset-2 rounded-lg"
