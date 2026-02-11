@@ -1,0 +1,31 @@
+.tooltipContainer {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.tooltipTrigger {
+  cursor: help;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.tooltipContent {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-4px);
+  background-color: var(--color-bg-card);
+  color: var(--color-text-primary);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: 6px;
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+  max-width: 280px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+  z-index: 1000;
+  white-space: normal;
+  pointer-events: none;
+}

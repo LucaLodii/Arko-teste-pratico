@@ -5,20 +5,20 @@
 }
 
 .section {
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-xl);
 }
 
 .sectionTitle {
-  font-size: 1.25rem;
+  font-size: var(--font-size-xl);
   font-weight: 600;
-  margin-bottom: 1.5rem;
-  color: #1a1a1a;
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-text-primary);
 }
 
 .fieldsGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.5rem;
+  gap: var(--spacing-lg);
 }
 
 /* Two-column layout for tablet and up */
@@ -32,33 +32,33 @@
 .advancedToggle {
   background: none;
   border: none;
-  padding: 0.75rem 0;
-  font-size: 1rem;
+  padding: var(--spacing-sm) 0;
+  font-size: var(--font-size-md);
   font-weight: 500;
-  color: #4a5568;
+  color: var(--color-text-secondary);
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--spacing-xs);
   width: 100%;
   text-align: left;
   transition: color 0.2s ease;
 }
 
 .advancedToggle:hover {
-  color: #2d3748;
+  color: var(--color-text-primary);
 }
 
 .advancedToggle:focus {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
   border-radius: 4px;
 }
 
 .advancedSection {
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #e2e8f0;
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-border);
   animation: slideDown 0.3s ease-out;
 }
 
@@ -75,13 +75,13 @@
 
 /* Form-level error message */
 .formError {
-  background-color: #fee2e2;
-  border: 1px solid #ef4444;
+  background-color: var(--color-error-bg);
+  border: 1px solid var(--color-error);
   border-radius: 6px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-  color: #991b1b;
-  font-size: 0.875rem;
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-error-text);
+  font-size: var(--font-size-sm);
   line-height: 1.5;
 }
 
@@ -92,21 +92,15 @@
   }
 
   .section {
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--spacing-lg);
   }
 
   .sectionTitle {
-    font-size: 1.125rem;
-    margin-bottom: 1rem;
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-md);
   }
 
   .fieldsGrid {
-    gap: 1.25rem;
+    gap: var(--spacing-md);
   }
-}
-
-/* Loading state styles */
-.form button[type="submit"]:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }

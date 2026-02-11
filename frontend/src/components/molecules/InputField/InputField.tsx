@@ -1,5 +1,5 @@
 import { useId } from 'react';
-import { Label, Input } from '../../atoms';
+import { Label, Input, Tooltip } from '../../atoms';
 import styles from './InputField.module.css';
 
 export interface InputFieldProps {
@@ -15,6 +15,7 @@ export interface InputFieldProps {
   max?: number;
   step?: number;
   id?: string;
+  tooltip?: string;
 }
 
 export function InputField({
@@ -30,15 +31,23 @@ export function InputField({
   max,
   step,
   id: idProp,
+  tooltip,
 }: InputFieldProps) {
   const generatedId = useId();
   const id = idProp ?? generatedId;
 
   return (
     <div className={styles.inputField}>
-      <Label htmlFor={id} required={required}>
-        {label}
-      </Label>
+      <div className={styles.labelRow}>
+        <Label htmlFor={id} required={required}>
+          {label}
+        </Label>
+        {tooltip && (
+          <Tooltip content={tooltip}>
+            <span aria-label="Mais informações">ℹ</span>
+          </Tooltip>
+        )}
+      </div>
       <Input
         id={id}
         type={type}

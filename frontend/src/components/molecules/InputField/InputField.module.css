@@ -3,8 +3,14 @@
   flex-direction: column;
 }
 
+.labelRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
 .errorMessage {
-  margin-top: 0.25rem;
-  font-size: 0.875rem;
-  color: #ef4444;
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
 }

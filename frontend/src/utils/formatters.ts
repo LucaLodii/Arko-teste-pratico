@@ -8,12 +8,18 @@ const BR_LOCALE = 'pt-BR';
 /**
  * Formats a number as Brazilian Real (R$)
  * @param value - Numeric value to format
+ * @param maximumFractionDigits - Max decimal places (default: 2)
  * @returns Formatted string, e.g. "R$ 50.000,00"
  */
-export function formatCurrency(value: number): string {
+export function formatCurrency(
+  value: number,
+  maximumFractionDigits = 2
+): string {
   return new Intl.NumberFormat(BR_LOCALE, {
     style: 'currency',
     currency: 'BRL',
+    maximumFractionDigits,
+    minimumFractionDigits: 0,
   }).format(value);
 }
 
