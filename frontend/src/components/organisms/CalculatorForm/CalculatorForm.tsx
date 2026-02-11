@@ -2,38 +2,34 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import axios from 'axios';
 import { InputField } from '../../molecules';
-import { Button } from '../../atoms';
+import { Button, Icon } from '../../atoms';
 import { calculationService } from '../../../services/calculation.service';
 import type { CalculationInput, CalculationResponse } from '../../../types/calculation.types';
-import styles from './CalculatorForm.module.css';
 
 export interface CalculatorFormProps {
   /** Callback when calculation succeeds (result and input for timeline chart) */
   onCalculate: (result: CalculationResponse, input: CalculationInput) => void;
-  
+
   /** Optional callback when errors occur */
   onError?: (error: string) => void;
-  
+
   /** Optional callback when loading state changes */
   onLoadingChange?: (loading: boolean) => void;
-  
+
   /** Optional initial form values */
   initialValues?: Partial<CalculationInput>;
 }
 
 interface FormState {
-  // Basic fields
   carValue: number;
   monthlyRent: number;
-  interestRateMonth: number; // Stored as percentage for display (e.g., 1.5)
+  interestRateMonth: number;
   financingTermMonths: number;
   analysisPeriodMonths: number;
-  
-  // Advanced fields
-  downPaymentPercent: number; // Stored as percentage for display (e.g., 25)
+  downPaymentPercent: number;
   maintenanceAnnual: number;
-  insuranceRateAnnual: number; // Stored as percentage for display (e.g., 6)
-  ipvaRate: number; // Stored as percentage for display (e.g., 4)
+  insuranceRateAnnual: number;
+  ipvaRate: number;
 }
 
 const TOOLTIPS = {
@@ -45,13 +41,13 @@ const TOOLTIPS = {
 const DEFAULT_VALUES: FormState = {
   carValue: 50000,
   monthlyRent: 2200,
-  interestRateMonth: 1.5, // Display as 1.5%
+  interestRateMonth: 1.5,
   financingTermMonths: 48,
   analysisPeriodMonths: 48,
-  downPaymentPercent: 25, // Display as 25%
+  downPaymentPercent: 25,
   maintenanceAnnual: 2000,
-  insuranceRateAnnual: 6, // Display as 6%
-  ipvaRate: 4, // Display as 4%
+  insuranceRateAnnual: 6,
+  ipvaRate: 4,
 };
 
 export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialValues }: CalculatorFormProps) {
@@ -59,7 +55,6 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
     ...DEFAULT_VALUES,
     ...(initialValues && {
       ...initialValues,
-      // Convert decimals to percentages for display if provided (use != null to allow 0)
       interestRateMonth: initialValues.interestRateMonth != null
         ? initialValues.interestRateMonth * 100
         : DEFAULT_VALUES.interestRateMonth,
@@ -82,18 +77,16 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
 
   const handleChange = (field: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.type === 'number' ? parseFloat(e.target.value) || 0 : e.target.value;
-    setFormState(prev => ({ ...prev, [field]: value }));
-    
-    // Clear error for this field when user starts typing
+    setFormState((prev) => ({ ...prev, [field]: value }));
+
     if (errors[field]) {
-      setErrors(prev => {
+      setErrors((prev) => {
         const newErrors = { ...prev };
         delete newErrors[field];
         return newErrors;
       });
     }
-    
-    // Clear form-level error
+
     if (formError) {
       setFormError(null);
     }
@@ -102,7 +95,6 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
 
-    // Validate basic fields
     if (formState.carValue <= 0) {
       newErrors.carValue = 'O valor do carro deve ser maior que zero';
     }
@@ -125,7 +117,6 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
       newErrors.analysisPeriodMonths = 'O período deve estar entre 1 e 120 meses';
     }
 
-    // Validate advanced fields
     if (formState.downPaymentPercent < 0 || formState.downPaymentPercent > 100) {
       newErrors.downPaymentPercent = 'A entrada deve estar entre 0% e 100%';
     }
@@ -148,16 +139,13 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    // Clear previous form error
+
     setFormError(null);
 
-    // Validate form
     if (!validateForm()) {
       return;
     }
 
-    // Convert percentages to decimals for API
     const calculationInput: CalculationInput = {
       carValue: formState.carValue,
       monthlyRent: formState.monthlyRent,
@@ -187,7 +175,9 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
       }
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 400) {
-          const data = error.response.data as { details?: Array<{ message: string }>; error?: string } | undefined;
+          const data = error.response.data as
+            | { details?: Array<{ message: string }>; error?: string }
+            | undefined;
           if (data?.details) {
             errorMessage = `Erro de validação: ${data.details.map((d) => d.message).join(', ')}`;
           } else if (data?.error) {
@@ -209,11 +199,14 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form}>
-      <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>Dados Básicos</h2>
-        
-        <div className={styles.fieldsGrid}>
+    <form onSubmit={handleSubmit} className="mx-auto w-full max-w-[800px] space-y-8">
+      <section>
+        <div className="mb-6 flex items-center gap-3">
+          <div className="h-8 w-1 rounded-full bg-sage-400" />
+          <h2 className="text-h2 !text-xl md:!text-2xl">Dados Básicos</h2>
+        </div>
+
+        <div className="grid grid-cols-1 gap-x-6 gap-y-6 md:grid-cols-2">
           <InputField
             label="Valor do Carro"
             type="number"
@@ -283,22 +276,30 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
             required
           />
         </div>
-      </div>
+      </section>
 
-      <div className={styles.section}>
+      <section className="border-t border-olive-100 pt-6">
         <button
           type="button"
           onClick={() => setShowAdvanced(!showAdvanced)}
-          className={styles.advancedToggle}
+          className="group flex w-full min-h-[48px] items-center gap-2 py-3 text-left font-medium text-olive-600 transition-colors hover:text-olive-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-sage-400 focus-visible:ring-offset-2 rounded-lg"
           aria-expanded={showAdvanced}
           aria-controls="advanced-options"
         >
-          {showAdvanced ? '▼' : '▶'} Opções Avançadas
+          <span
+            className={`transition-transform duration-300 ${showAdvanced ? 'rotate-90' : 'rotate-0'}`}
+          >
+            <Icon name="chevron-right" size="sm" />
+          </span>
+          <span className="text-lg">Opções Avançadas</span>
+          <span className="ml-auto hidden text-sm font-normal text-olive-400 sm:block">
+            {showAdvanced ? 'Ocultar detalhes' : 'Ajustar entrada, manutenção, taxas...'}
+          </span>
         </button>
 
         {showAdvanced && (
-          <div id="advanced-options" className={styles.advancedSection}>
-            <div className={styles.fieldsGrid}>
+          <div id="advanced-options" className="mt-6 border-t border-olive-100 pt-6">
+            <div className="grid grid-cols-1 gap-x-6 gap-y-6 md:grid-cols-2">
               <InputField
                 label="Entrada (%)"
                 type="number"
@@ -354,22 +355,22 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
             </div>
           </div>
         )}
-      </div>
+      </section>
 
       {formError && (
-        <div className={styles.formError} role="alert">
+        <div
+          className="mb-6 rounded-lg border border-status-error bg-red-50 p-4 text-sm leading-relaxed text-status-error"
+          role="alert"
+        >
           {formError}
         </div>
       )}
 
-      <Button
-        type="submit"
-        variant="primary"
-        loading={loading}
-        fullWidth
-      >
-        Calcular Comparação
-      </Button>
+      <div className="pt-4">
+        <Button type="submit" variant="primary" loading={loading} fullWidth className="text-lg shadow-lg shadow-sage-400/20">
+          Calcular Comparação
+        </Button>
+      </div>
     </form>
   );
 }

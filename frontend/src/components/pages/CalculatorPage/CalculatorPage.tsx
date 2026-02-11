@@ -5,7 +5,6 @@ import type {
   CalculationInput,
   CalculationResponse,
 } from '../../../types/calculation.types';
-import styles from './CalculatorPage.module.css';
 
 /**
  * Main calculator page: form + results integration
@@ -32,27 +31,37 @@ export function CalculatorPage() {
   };
 
   return (
-    <div className={styles.container}>
+    <div className="flex min-h-screen flex-col bg-sage-50 font-sans">
       <Header />
 
-      <section className={styles.formSection}>
-        <Card>
-          <CalculatorForm
-            onCalculate={handleCalculate}
-            onError={handleError}
-            onLoadingChange={setLoading}
-          />
-        </Card>
-      </section>
+      <main className="mx-auto w-full max-w-[1200px] flex-grow space-y-12 px-4 py-8 md:px-8 md:py-12">
+        <section className="animate-slide-down">
+          <Card
+            padding="large"
+            className="border-t-4 border-t-sage-400 bg-white/80 backdrop-blur-sm"
+          >
+            <CalculatorForm
+              onCalculate={handleCalculate}
+              onError={handleError}
+              onLoadingChange={setLoading}
+            />
+          </Card>
+        </section>
 
-      <section className={styles.resultsSection}>
-        <ComparisonResults
-          result={result}
-          input={input}
-          loading={loading}
-          error={error}
-        />
-      </section>
+        <section id="results" className="scroll-mt-10">
+          <div className="mb-6 flex items-center gap-3">
+            <div className="h-8 w-1 rounded-full bg-sage-400 shadow-sm" />
+            <h2 className="text-h2">Resultados Comparativos</h2>
+          </div>
+
+          <ComparisonResults
+            result={result}
+            input={input}
+            loading={loading}
+            error={error}
+          />
+        </section>
+      </main>
 
       <Footer />
     </div>
