@@ -29,6 +29,7 @@ export class CashPurchaseService {
     const carValue = input.carValue;
     const analysisPeriodMonths = input.analysisPeriodMonths;
     const anos = Math.floor(analysisPeriodMonths / 12);
+    const mesesRestantes = analysisPeriodMonths % 12;
     const taxas =
       input.depreciationRate && input.depreciationRate.length > 0
         ? input.depreciationRate
@@ -44,31 +45,49 @@ export class CashPurchaseService {
       valoresInicioAno.push(valorAtual);
     }
 
+    // Apply partial year depreciation if remaining months
+    if (mesesRestantes > 0) {
+      const taxaProximoAno = taxas[anos] ?? taxas[taxas.length - 1];
+      const taxaMensal = taxaProximoAno / 12;
+      valorAtual *= Math.pow(1 - taxaMensal, mesesRestantes);
+    }
+
     const valorResidual = valorAtual;
     const depreciacao = carValue - valorResidual;
 
-    // IPVA: valor at start of each year × rate
+    // IPVA: valor at start of each year × rate (complete years + prorated partial)
     const ipvaRate = input.ipvaRate ?? DEFAULT_IPVA_RATE;
     let ipva = 0;
     for (let ano = 0; ano < anos; ano++) {
       ipva += valoresInicioAno[ano] * ipvaRate;
     }
+    if (mesesRestantes > 0) {
+      const fracao = mesesRestantes / 12;
+      ipva += valoresInicioAno[anos] * ipvaRate * fracao;
+    }
 
-    // Insurance: valor at start of each year × rate
+    // Insurance: valor at start of each year × rate (complete years + prorated partial)
     const insuranceRate = input.insuranceRateAnnual ?? DEFAULT_INSURANCE_RATE_ANNUAL;
     let seguro = 0;
     for (let ano = 0; ano < anos; ano++) {
       seguro += valoresInicioAno[ano] * insuranceRate;
     }
+    if (mesesRestantes > 0) {
+      const fracao = mesesRestantes / 12;
+      seguro += valoresInicioAno[anos] * insuranceRate * fracao;
+    }
 
-    // Maintenance: fixed annual × complete years
+    // Maintenance: complete years + prorated partial year
+    const maintenanceAnnual = input.maintenanceAnnual ?? DEFAULT_MAINTENANCE_ANNUAL;
     const manutencao =
-      (input.maintenanceAnnual ?? DEFAULT_MAINTENANCE_ANNUAL) * anos;
+      maintenanceAnnual * anos +
+      (mesesRestantes > 0 ? maintenanceAnnual * (mesesRestantes / 12) : 0);
 
-    // Opportunity cost: capital immobilized in the car
+    // Opportunity cost: capital immobilized in the car (use fractional years)
+    const anosDecimal = analysisPeriodMonths / 12;
     const custoOportunidade = this.opportunityCostService.calculate(
       carValue,
-      anos
+      anosDecimal
     );
 
     const totalCost =

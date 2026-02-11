@@ -32,18 +32,33 @@ export function ComparisonResults({
     null
   );
   const [timelineLoading, setTimelineLoading] = useState(false);
+  const [timelineError, setTimelineError] = useState<string | null>(null);
 
   useEffect(() => {
     if (result && input) {
+      const abortController = new AbortController();
+
       setTimelineLoading(true);
       setTimelineData(null);
+      setTimelineError(null);
       calculationService
-        .calculateTimeline(input)
-        .then(setTimelineData)
-        .catch(() => setTimelineData(null))
+        .calculateTimeline(input, abortController.signal)
+        .then((data) => {
+          setTimelineData(data);
+          setTimelineError(null);
+        })
+        .catch((error) => {
+          if (error?.name !== 'AbortError' && error?.code !== 'ERR_CANCELED') {
+            setTimelineData(null);
+            setTimelineError('Não foi possível carregar o gráfico de evolução de custos.');
+          }
+        })
         .finally(() => setTimelineLoading(false));
+
+      return () => abortController.abort();
     } else {
       setTimelineData(null);
+      setTimelineError(null);
     }
   }, [result, input]);
 
@@ -158,6 +173,10 @@ export function ComparisonResults({
                 <span>{formatCurrency(financedPurchase.breakdown.totalJuros)}</span>
               </div>
               <div className={styles.breakdownRow}>
+                <span>Depreciação</span>
+                <span>{formatCurrency(financedPurchase.breakdown.depreciacao)}</span>
+              </div>
+              <div className={styles.breakdownRow}>
                 <span>IPVA</span>
                 <span>{formatCurrency(financedPurchase.breakdown.ipva)}</span>
               </div>
@@ -191,6 +210,14 @@ export function ComparisonResults({
           <div className={styles.skeleton}>
             <div className={styles.skeletonTitle} />
             <div className={styles.chartSkeletonPlaceholder} />
+          </div>
+        </Card>
+      )}
+      {timelineError && !timelineLoading && (
+        <Card padding="large">
+          <div className={styles.error}>
+            <Icon name="error" />
+            {timelineError}
           </div>
         </Card>
       )}

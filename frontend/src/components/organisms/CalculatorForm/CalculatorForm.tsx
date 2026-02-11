@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
+import axios from 'axios';
 import { InputField } from '../../molecules';
 import { Button } from '../../atoms';
 import { calculationService } from '../../../services/calculation.service';
@@ -58,18 +59,18 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
     ...DEFAULT_VALUES,
     ...(initialValues && {
       ...initialValues,
-      // Convert decimals to percentages for display if provided
-      interestRateMonth: initialValues.interestRateMonth 
-        ? initialValues.interestRateMonth * 100 
+      // Convert decimals to percentages for display if provided (use != null to allow 0)
+      interestRateMonth: initialValues.interestRateMonth != null
+        ? initialValues.interestRateMonth * 100
         : DEFAULT_VALUES.interestRateMonth,
-      downPaymentPercent: initialValues.downPaymentPercent 
-        ? initialValues.downPaymentPercent * 100 
+      downPaymentPercent: initialValues.downPaymentPercent != null
+        ? initialValues.downPaymentPercent * 100
         : DEFAULT_VALUES.downPaymentPercent,
-      insuranceRateAnnual: initialValues.insuranceRateAnnual 
-        ? initialValues.insuranceRateAnnual * 100 
+      insuranceRateAnnual: initialValues.insuranceRateAnnual != null
+        ? initialValues.insuranceRateAnnual * 100
         : DEFAULT_VALUES.insuranceRateAnnual,
-      ipvaRate: initialValues.ipvaRate 
-        ? initialValues.ipvaRate * 100 
+      ipvaRate: initialValues.ipvaRate != null
+        ? initialValues.ipvaRate * 100
         : DEFAULT_VALUES.ipvaRate,
     }),
   }));
@@ -175,23 +176,28 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
     try {
       const result = await calculationService.calculate(calculationInput);
       onCalculate(result, calculationInput);
-    } catch (error: any) {
+    } catch (error: unknown) {
       let errorMessage = 'Erro ao calcular. Tente novamente.';
 
-      if (error.code === 'ERR_NETWORK' || error.message?.includes('Network')) {
-        errorMessage = 'Erro ao conectar com o servidor. Verifique sua conexão.';
-      } else if (error.response?.status === 400) {
-        // Try to parse validation errors (backend returns details array)
-        if (error.response.data?.details) {
-          const details = error.response.data.details;
-          errorMessage = `Erro de validação: ${details.map((d: { message: string }) => d.message).join(', ')}`;
-        } else if (error.response.data?.error) {
-          errorMessage = error.response.data.error;
-        } else {
-          errorMessage = 'Dados inválidos. Verifique os campos e tente novamente.';
+      if (error instanceof Error) {
+        const err = error as Error & { code?: string };
+        if (err.code === 'ERR_NETWORK' || err.message?.includes('Network')) {
+          errorMessage = 'Erro ao conectar com o servidor. Verifique sua conexão.';
         }
-      } else if (error.response?.status === 500) {
-        errorMessage = 'Erro no servidor. Tente novamente em alguns instantes.';
+      }
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 400) {
+          const data = error.response.data as { details?: Array<{ message: string }>; error?: string } | undefined;
+          if (data?.details) {
+            errorMessage = `Erro de validação: ${data.details.map((d) => d.message).join(', ')}`;
+          } else if (data?.error) {
+            errorMessage = data.error;
+          } else {
+            errorMessage = 'Dados inválidos. Verifique os campos e tente novamente.';
+          }
+        } else if (error.response?.status === 500) {
+          errorMessage = 'Erro no servidor. Tente novamente em alguns instantes.';
+        }
       }
 
       setFormError(errorMessage);
@@ -349,6 +355,12 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
           </div>
         )}
       </div>
+
+      {formError && (
+        <div className={styles.formError} role="alert">
+          {formError}
+        </div>
+      )}
 
       <Button
         type="submit"

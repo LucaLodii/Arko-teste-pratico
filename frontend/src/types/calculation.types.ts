@@ -81,6 +81,9 @@ export interface FinancedPurchaseBreakdown {
   /** Total interest paid on the loan */
   totalJuros: number;
 
+  /** Total depreciation over the period */
+  depreciacao: number;
+
   /** Total IPVA (vehicle tax) over the period */
   ipva: number;
 

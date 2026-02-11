@@ -22,12 +22,17 @@ export const calculationService = {
   /**
    * Fetches cost timeline for chart visualization.
    * @param input - Same calculation parameters as calculate
+   * @param signal - Optional AbortSignal to cancel the request
    * @returns Promise with TimelineResponse containing monthly cost data
    */
-  async calculateTimeline(input: CalculationInput): Promise<TimelineResponse> {
+  async calculateTimeline(
+    input: CalculationInput,
+    signal?: AbortSignal
+  ): Promise<TimelineResponse> {
     const response = await api.post<TimelineResponse>(
       '/api/calculate-timeline',
-      input
+      input,
+      { signal }
     );
     return response.data;
   },

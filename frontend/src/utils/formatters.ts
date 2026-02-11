@@ -15,6 +15,9 @@ export function formatCurrency(
   value: number,
   maximumFractionDigits = 2
 ): string {
+  if (!Number.isFinite(value)) {
+    return 'R$ —';
+  }
   return new Intl.NumberFormat(BR_LOCALE, {
     style: 'currency',
     currency: 'BRL',
