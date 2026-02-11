@@ -1,31 +1,41 @@
-import { useState } from 'react';
-import styles from './Tooltip.module.css';
+import React from 'react';
+import { Icon } from '../Icon';
 
 export interface TooltipProps {
   content: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  position?: 'top' | 'bottom';
 }
 
-export function Tooltip({ content, children }: TooltipProps) {
-  const [isVisible, setIsVisible] = useState(false);
+export function Tooltip({ content, children, position = 'top' }: TooltipProps) {
+  const trigger = children ?? (
+    <span className="text-olive-400 hover:text-sage-600 transition-colors cursor-help inline-flex">
+      <Icon name="info" size="sm" />
+    </span>
+  );
+
+  const positionClasses = {
+    top: 'bottom-full left-1/2 -translate-x-1/2 mb-2',
+    bottom: 'top-full left-1/2 -translate-x-1/2 mt-2',
+  };
+
+  const arrowClasses = {
+    top: 'top-full left-1/2 -translate-x-1/2 border-t-olive-900 border-b-transparent border-x-transparent border-t-[6px] border-x-[6px]',
+    bottom: 'bottom-full left-1/2 -translate-x-1/2 border-b-olive-900 border-t-transparent border-x-transparent border-b-[6px] border-x-[6px]',
+  };
 
   return (
-    <div className={styles.tooltipContainer}>
-      <span
-        onMouseEnter={() => setIsVisible(true)}
-        onMouseLeave={() => setIsVisible(false)}
-        onFocus={() => setIsVisible(true)}
-        onBlur={() => setIsVisible(false)}
-        className={styles.tooltipTrigger}
-        tabIndex={0}
+    <div className="group relative inline-flex items-center">
+      {trigger}
+      <div
+        role="tooltip"
+        className={`absolute ${positionClasses[position]} z-50 w-max max-w-[200px] sm:max-w-xs invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200 ease-in-out delay-100`}
       >
-        {children}
-      </span>
-      {isVisible && (
-        <div className={styles.tooltipContent} role="tooltip">
+        <div className="relative bg-olive-900 text-white text-xs leading-relaxed px-3 py-2 rounded-lg shadow-xl text-center">
           {content}
+          <div className={`absolute w-0 h-0 ${arrowClasses[position]}`} />
         </div>
-      )}
+      </div>
     </div>
   );
 }

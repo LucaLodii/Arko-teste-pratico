@@ -1,5 +1,4 @@
 import type { LabelHTMLAttributes } from 'react';
-import styles from './Label.module.css';
 
 export interface LabelProps extends LabelHTMLAttributes<HTMLLabelElement> {
   children: React.ReactNode;
@@ -11,11 +10,11 @@ export function Label({ children, htmlFor, required, className, ...rest }: Label
   return (
     <label
       htmlFor={htmlFor}
-      className={`${styles.label} ${className ?? ''}`.trim()}
+      className={`block text-sm font-medium text-olive-700 mb-1.5 ${className ?? ''}`.trim()}
       {...rest}
     >
       {children}
-      {required && <span className={styles.required} aria-hidden="true">*</span>}
+      {required && <span className="text-status-error ml-1" aria-hidden="true">*</span>}
     </label>
   );
 }

@@ -1,144 +1,48 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  color-scheme: light dark;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  /* Design tokens - colors (default: dark) */
-  --color-primary: #646cff;
-  --color-primary-hover: #535bf2;
-  --color-bg-page: #242424;
-  --color-bg-card: #1a1a1a;
-  --color-bg-input: #1a1a1a;
-  --color-text-primary: rgba(255, 255, 255, 0.87);
-  --color-text-secondary: rgba(255, 255, 255, 0.7);
-  --color-text-tertiary: rgba(255, 255, 255, 0.5);
-  --color-error: #ef4444;
-  --color-error-text: #fca5a5;
-  --color-error-bg: rgba(239, 68, 68, 0.15);
-  --color-success: #10b981;
-  --color-border: rgba(255, 255, 255, 0.12);
-  --color-border-input: rgba(255, 255, 255, 0.2);
-  --color-border-focus: var(--color-primary);
-  --color-breakeven-bg: #0c4a6e;
-  --color-breakeven-bg-end: #0369a1;
-  --color-breakeven-border: #0284c7;
-  --color-breakeven-text: #e0f2fe;
-  --color-skeleton: rgba(255, 255, 255, 0.1);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-
-  /* Spacing */
-  --spacing-xs: 0.5rem;
-  --spacing-sm: 0.75rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  --spacing-2xl: 3rem;
-
-  /* Typography */
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
-  --font-size-md: 1rem;
-  --font-size-lg: 1.125rem;
-  --font-size-xl: 1.25rem;
-  --font-size-2xl: 1.5rem;
-  --font-size-3xl: 1.75rem;
-
-  /* Default dark theme */
-  color: var(--color-text-primary);
-  background-color: var(--color-bg-page);
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --color-bg-page: #ffffff;
-    --color-bg-card: #f9f9f9;
-    --color-bg-input: #ffffff;
-    --color-text-primary: #213547;
-    --color-text-secondary: #4a5568;
-    --color-text-tertiary: #6b7280;
-    --color-error-text: #991b1b;
-    --color-error-bg: #fee2e2;
-    --color-border: rgba(0, 0, 0, 0.12);
-    --color-border-input: rgba(0, 0, 0, 0.2);
-    --color-breakeven-bg: #e0f2fe;
-    --color-breakeven-bg-end: #bae6fd;
-    --color-breakeven-border: #7dd3fc;
-    --color-breakeven-text: #0c4a6e;
-    --color-skeleton: #e2e8f0;
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
-  }
-  a:hover {
-    color: var(--color-primary-hover);
-  }
-}
-
-a {
-  font-weight: 500;
-  color: var(--color-primary);
-  text-decoration: inherit;
-}
-a:hover {
-  color: var(--color-primary-hover);
-}
-
+/* Estilos Globais e Reset */
 body {
+  @apply bg-sage-50 text-olive-900 antialiased selection:bg-sage-200 selection:text-olive-900;
   margin: 0;
   display: flex;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-h1 {
-  font-size: var(--font-size-3xl);
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: var(--font-size-md);
-  font-weight: 500;
-  font-family: inherit;
-  background-color: var(--color-bg-card);
-  color: var(--color-text-primary);
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: var(--color-primary);
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg-page: #242424;
-    --color-bg-card: #1a1a1a;
-    --color-bg-input: #1a1a1a;
-    --color-text-primary: rgba(255, 255, 255, 0.87);
-    --color-text-secondary: rgba(255, 255, 255, 0.7);
-    --color-text-tertiary: rgba(255, 255, 255, 0.5);
-    --color-error-text: #fca5a5;
-    --color-error-bg: rgba(239, 68, 68, 0.15);
-    --color-border: rgba(255, 255, 255, 0.12);
-    --color-border-input: rgba(255, 255, 255, 0.2);
-    --color-breakeven-bg: rgba(12, 74, 110, 0.3);
-    --color-breakeven-border: #0284c7;
-    --color-breakeven-text: #e0f2fe;
-    --color-skeleton: rgba(255, 255, 255, 0.1);
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+/* Utilitários de Tipografia Customizados */
+@layer utilities {
+  .text-h1 {
+    @apply text-3xl md:text-4xl font-bold text-olive-900 tracking-tight leading-tight;
   }
+  .text-h2 {
+    @apply text-2xl md:text-3xl font-semibold text-olive-900 tracking-tight;
+  }
+  .text-h3 {
+    @apply text-lg md:text-xl font-medium text-olive-800;
+  }
+  .text-body {
+    @apply text-base text-olive-700 leading-relaxed;
+  }
+  .text-small {
+    @apply text-sm text-olive-500;
+  }
+
+  /* Utilitário para esconder scrollbar mas manter funcionalidade */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
 }

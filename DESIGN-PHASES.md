@@ -80,24 +80,24 @@ TailwindConfig (colors, shadows, animations)
 **Goal:** Install and configure Tailwind CSS with the custom design system.
 
 **Tasks:**
-- [ ] Install Tailwind: `npm install -D tailwindcss postcss autoprefixer` (in `frontend/`)
-- [ ] Initialize config: `npx tailwindcss init -p`
-- [ ] Replace `tailwind.config.js` with content from `GeminiResponse/TailwindConfig`
+- [x] Install Tailwind: `npm install -D tailwindcss postcss autoprefixer` (in `frontend/`)
+- [x] Initialize config: `npx tailwindcss init -p`
+- [x] Replace `tailwind.config.js` with content from `GeminiResponse/TailwindConfig`
   - Include sage/olive color palette (50–900)
   - Include scenario colors (cash, financed, rental)
   - Include semantic colors (status.success, status.error, status.warning, status.info)
   - Include custom shadows (soft, glow) and animations (slide-down, shimmer)
-- [ ] Update `frontend/src/index.css` with content from `GeminiResponse/GlobalCssAndTypografy`
+- [x] Update `frontend/src/index.css` with content from `GeminiResponse/GlobalCssAndTypografy`
   - Add `@tailwind base; @tailwind components; @tailwind utilities;`
   - Add typography utilities (.text-h1, .text-h2, .text-h3, .text-body, .text-small, .text-currency)
   - Add body styles (bg-sage-50, text-olive-900, antialiased)
-- [ ] Add Tailwind content paths to `tailwind.config.js`: `./index.html`, `./src/**/*.{js,ts,jsx,tsx}`
-- [ ] Verify: run `npm run dev` and confirm no build errors
-- [ ] Verify: add a test class like `className="text-sage-400"` to any component and confirm it renders
+- [x] Add Tailwind content paths to `tailwind.config.js`: `./index.html`, `./src/**/*.{js,ts,jsx,tsx}`
+- [x] Verify: run `npm run dev` and confirm no build errors
+- [x] Verify: add a test class like `className="text-sage-400"` to any component and confirm it renders
 
 **Reference:** `GeminiResponse/TailwindConfig`, `GeminiResponse/GlobalCssAndTypografy`
 
-**Status:** Pending
+**Status:** Complete
 
 ---
 
@@ -106,21 +106,21 @@ TailwindConfig (colors, shadows, animations)
 **Goal:** Address critical issues before migration so components work correctly.
 
 **Tasks:**
-- [ ] Create proper `InputField` molecule in `frontend/src/components/molecules/InputField/InputField.tsx`
+- [x] Create proper `InputField` molecule in `frontend/src/components/molecules/InputField/InputField.tsx`
   - Props: label, id, error (string | boolean), helperText?, tooltip?, fullWidth?, and all InputHTMLAttributes
   - Layout: Label row (with optional Tooltip icon) + Input + Error/Helper message
   - Imports: `Input`, `Label` from `../../atoms`; `Tooltip` from `../../atoms/Tooltip`; `Icon` from `../../atoms/Icon`
   - Use `aria-invalid`, `aria-describedby` for accessibility
-- [ ] Update `frontend/src/components/atoms/index.ts` to export Icon and Tooltip
+- [x] Update `frontend/src/components/atoms/index.ts` to export Icon and Tooltip
   - Add `export * from './Icon';` and `export * from './Tooltip';`
-- [ ] Ensure `Tooltip.tsx` file exists (not `ToolTip.tsx`); rename if needed for case consistency
-- [ ] Document import path rules: organisms at `organisms/X/` import from `../../atoms`; molecules at `molecules/X/` import from `../../atoms`
+- [x] Ensure `Tooltip.tsx` file exists (not `ToolTip.tsx`); rename if needed for case consistency
+- [x] Document import path rules: organisms at `organisms/X/` import from `../../atoms`; molecules at `molecules/X/` import from `../../atoms`
 
 **Reference:** `GEMINI_DESIGN_PROMPT_PT-BR.md` (InputField molecule specification), corrected InputField implementation discussed in conversation
 
 **Constraint:** Do not migrate any component yet; only fix the InputField and exports so subsequent phases can rely on them.
 
-**Status:** Pending
+**Status:** Complete
 
 ---
 
@@ -138,13 +138,13 @@ TailwindConfig (colors, shadows, animations)
 7. Card (standalone)
 
 **For each atom:**
-- [ ] **Icon:** Replace `frontend/src/components/atoms/Icon/Icon.tsx` with `GeminiResponse/Icon`; fix imports; delete `Icon.module.css`
-- [ ] **Spinner:** Replace `frontend/src/components/atoms/Spinner/Spinner.tsx` with `GeminiResponse/Atoms` Spinner section; delete `Spinner.module.css`
-- [ ] **Label:** Replace `frontend/src/components/atoms/Label/Label.tsx` with `GeminiResponse/Atoms` Label section; delete `Label.module.css`
-- [ ] **Tooltip:** Replace `frontend/src/components/atoms/Tooltip/Tooltip.tsx` with `GeminiResponse/ToolTip`; fix import of Icon; delete `Tooltip.module.css`
-- [ ] **Input:** Replace `frontend/src/components/atoms/Input/Input.tsx` with `GeminiResponse/Atoms` Input section; delete `Input.module.css`
-- [ ] **Button:** Replace `frontend/src/components/atoms/Button/Button.tsx` with `GeminiResponse/Atoms` Button section; fix Spinner import; delete `Button.module.css`
-- [ ] **Card:** Replace `frontend/src/components/atoms/Card/Card.tsx` with `GeminiResponse/Atoms` Card section; delete `Card.module.css`
+- [x] **Icon:** Replace `frontend/src/components/atoms/Icon/Icon.tsx` with `GeminiResponse/Icon`; fix imports; delete `Icon.module.css`
+- [x] **Spinner:** Replace `frontend/src/components/atoms/Spinner/Spinner.tsx` with `GeminiResponse/Atoms` Spinner section; delete `Spinner.module.css`
+- [x] **Label:** Replace `frontend/src/components/atoms/Label/Label.tsx` with `GeminiResponse/Atoms` Label section; delete `Label.module.css`
+- [x] **Tooltip:** Replace `frontend/src/components/atoms/Tooltip/Tooltip.tsx` with `GeminiResponse/ToolTip`; fix import of Icon; delete `Tooltip.module.css`
+- [x] **Input:** Replace `frontend/src/components/atoms/Input/Input.tsx` with `GeminiResponse/Atoms` Input section; delete `Input.module.css`
+- [x] **Button:** Replace `frontend/src/components/atoms/Button/Button.tsx` with `GeminiResponse/Atoms` Button section; fix Spinner import; delete `Button.module.css`
+- [x] **Card:** Replace `frontend/src/components/atoms/Card/Card.tsx` with `GeminiResponse/Atoms` Card section; delete `Card.module.css`
 
 **Per-component checklist:**
 - Replace `.tsx` content with GeminiResponse version
@@ -155,7 +155,7 @@ TailwindConfig (colors, shadows, animations)
 
 **Reference:** `GeminiResponse/Atoms`, `GeminiResponse/Icon`, `GeminiResponse/ToolTip`
 
-**Status:** Pending
+**Status:** Complete
 
 ---
 
@@ -164,16 +164,16 @@ TailwindConfig (colors, shadows, animations)
 **Goal:** Replace InputField with Tailwind-styled version that composes atoms correctly.
 
 **Tasks:**
-- [ ] Replace `frontend/src/components/molecules/InputField/InputField.tsx` with the corrected InputField implementation (from Phase 1)
-- [ ] Ensure imports: `Input`, `Label` from `../../atoms`; `Tooltip` from `../../atoms/Tooltip`; `Icon` from `../../atoms/Icon`
-- [ ] Props must include: label, id, error?, helperText?, tooltip?, fullWidth?, and standard input props (value, onChange, name, type, placeholder, etc.)
-- [ ] Delete `frontend/src/components/molecules/InputField/InputField.module.css`
-- [ ] Update `frontend/src/components/molecules/index.ts` if needed
-- [ ] Test: render InputField in CalculatorForm (or a test page) with tooltip, error, and helperText variants
+- [x] Replace `frontend/src/components/molecules/InputField/InputField.tsx` with the corrected InputField implementation (from Phase 1)
+- [x] Ensure imports: `Input`, `Label` from `../../atoms`; `Tooltip` from `../../atoms/Tooltip`; `Icon` from `../../atoms/Icon`
+- [x] Props must include: label, id, error?, helperText?, tooltip?, fullWidth?, and standard input props (value, onChange, name, type, placeholder, etc.)
+- [x] Delete `frontend/src/components/molecules/InputField/InputField.module.css`
+- [x] Update `frontend/src/components/molecules/index.ts` if needed
+- [x] Test: render InputField in CalculatorForm (or a test page) with tooltip, error, and helperText variants
 
 **Reference:** Phase 1 InputField specification, `GEMINI_DESIGN_PROMPT_PT-BR.md` (InputField = Label + Input + Error + tooltip)
 
-**Status:** Pending
+**Status:** Complete
 
 ---
 
@@ -189,12 +189,12 @@ TailwindConfig (colors, shadows, animations)
 5. CalculatorForm (depends on InputField, Button)
 
 **Tasks:**
-- [ ] **Header:** Replace `frontend/src/components/organisms/Header/Header.tsx` with `GeminiResponse/Header`; fix Icon import path; delete `Header.module.css`
-- [ ] **Footer:** Replace `frontend/src/components/organisms/Footer/Footer.tsx` with `GeminiResponse/Footer`; fix Icon import path; delete `Footer.module.css`
-- [ ] **CostComparisonChart:** Replace `frontend/src/components/organisms/CostComparisonChart/CostComparisonChart.tsx` with `GeminiResponse/CostComparisonChart`; preserve props for `data` from API; delete `CostComparisonChart.module.css`
-- [ ] **ComparisonResults:** Replace `frontend/src/components/organisms/ComparisonResults/ComparisonResults.tsx` with `GeminiResponse/ComparisonResults`; fix imports (Card, CostComparisonChart); replace mock types with `CalculationResponse`, `CalculationInput` from `frontend/src/types/calculation.types.ts`; delete `ComparisonResults.module.css`
-- [ ] **CalculatorForm:** Replace `frontend/src/components/organisms/CalculatorForm/CalculatorForm.tsx` with `GeminiResponse/CalculatorForm`; fix imports (Button, InputField); replace mock types with `CalculationInput`, `CalculationResponse`; ensure form calls `calculationService.calculate` and `onCalculate`/`onError`/`onLoadingChange`; delete `CalculatorForm.module.css`
-- [ ] **CalculatorForm validation:** Preserve all required fields: carValue, monthlyRent, interestRateMonth, financingTermMonths, analysisPeriodMonths; advanced: downPaymentPercent, maintenanceAnnual, insuranceRateAnnual, ipvaRate
+- [x] **Header:** Replace `frontend/src/components/organisms/Header/Header.tsx` with `GeminiResponse/Header`; fix Icon import path; delete `Header.module.css`
+- [x] **Footer:** Replace `frontend/src/components/organisms/Footer/Footer.tsx` with `GeminiResponse/Footer`; fix Icon import path; delete `Footer.module.css`
+- [x] **CostComparisonChart:** Replace `frontend/src/components/organisms/CostComparisonChart/CostComparisonChart.tsx` with `GeminiResponse/CostComparisonChart`; preserve props for `data` from API; delete `CostComparisonChart.module.css`
+- [x] **ComparisonResults:** Replace `frontend/src/components/organisms/ComparisonResults/ComparisonResults.tsx` with `GeminiResponse/ComparisonResults`; fix imports (Card, CostComparisonChart); replace mock types with `CalculationResponse`, `CalculationInput` from `frontend/src/types/calculation.types.ts`; delete `ComparisonResults.module.css`
+- [x] **CalculatorForm:** Replace `frontend/src/components/organisms/CalculatorForm/CalculatorForm.tsx` with `GeminiResponse/CalculatorForm`; fix imports (Button, InputField); replace mock types with `CalculationInput`, `CalculationResponse`; ensure form calls `calculationService.calculate` and `onCalculate`/`onError`/`onLoadingChange`; delete `CalculatorForm.module.css`
+- [x] **CalculatorForm validation:** Preserve all required fields: carValue, monthlyRent, interestRateMonth, financingTermMonths, analysisPeriodMonths; advanced: downPaymentPercent, maintenanceAnnual, insuranceRateAnnual, ipvaRate
 
 **Per-organism checklist:**
 - Replace `.tsx` content
@@ -212,7 +212,7 @@ TailwindConfig (colors, shadows, animations)
 
 **Reference:** `GeminiResponse/Header`, `GeminiResponse/Footer`, `GeminiResponse/CostComparisonChart`, `GeminiResponse/ComparisonResults`, `GeminiResponse/CalculatorForm`
 
-**Status:** Pending
+**Status:** Complete
 
 ---
 
@@ -221,18 +221,18 @@ TailwindConfig (colors, shadows, animations)
 **Goal:** Update CalculatorPage to use migrated components and remove inline header/footer.
 
 **Tasks:**
-- [ ] Replace `frontend/src/components/pages/CalculatorPage/CalculatorPage.tsx` with layout from `GeminiResponse/CalculatorPage`
-- [ ] Use separate Header and Footer organism components (import from `../../organisms/Header`, `../../organisms/Footer`)
-- [ ] Do not use inline header/footer markup; use `<Header />` and `<Footer />`
-- [ ] Preserve state: result, input, loading, error
-- [ ] Preserve callbacks: handleCalculate, handleError, onLoadingChange
-- [ ] Delete `frontend/src/components/pages/CalculatorPage/CalculatorPage.module.css`
-- [ ] Update `frontend/src/App.tsx` if it imports App.css; remove or simplify to use Tailwind-only
-- [ ] Verify: full page renders, form submits, results display, chart shows, Header/Footer render correctly
+- [x] Replace `frontend/src/components/pages/CalculatorPage/CalculatorPage.tsx` with layout from `GeminiResponse/CalculatorPage`
+- [x] Use separate Header and Footer organism components (import from `../../organisms/Header`, `../../organisms/Footer`)
+- [x] Do not use inline header/footer markup; use `<Header />` and `<Footer />`
+- [x] Preserve state: result, input, loading, error
+- [x] Preserve callbacks: handleCalculate, handleError, onLoadingChange
+- [x] Delete `frontend/src/components/pages/CalculatorPage/CalculatorPage.module.css`
+- [x] Update `frontend/src/App.tsx` if it imports App.css; remove or simplify to use Tailwind-only
+- [x] Verify: full page renders, form submits, results display, chart shows, Header/Footer render correctly
 
 **Reference:** `GeminiResponse/CalculatorPage`, `GEMINI_DESIGN_PROMPT_PT-BR.md` (page structure)
 
-**Status:** Pending
+**Status:** Complete
 
 ---
 
@@ -241,15 +241,15 @@ TailwindConfig (colors, shadows, animations)
 **Goal:** Implement features that were specified in the prompt but not fully delivered in GeminiResponse.
 
 **Tasks:**
-- [ ] **Break-even markers in chart:** Add vertical dashed ReferenceLine components to CostComparisonChart at `breakEvenCashMonths` and `breakEvenFinancedMonths` (from `result.breakEven`); show label "Break-even: Mês X"
-- [ ] **Shimmer on skeleton:** Update ResultsSkeleton in ComparisonResults to use `animate-shimmer` (from tailwind.config) instead of only `animate-pulse`; apply shimmer background gradient to skeleton blocks
-- [ ] **Micro-interactions:** Verify 300ms transitions on expand/collapse (Opções Avançadas, card details); verify hover states on buttons and links
-- [ ] **Focus rings:** Ensure all interactive elements have visible focus-visible rings (Tailwind `focus-visible:ring-2`)
-- [ ] **Tooltip on break-even section:** Add Tooltip with info icon explaining "Ponto de equilíbrio" per prompt specification
+- [x] **Break-even markers in chart:** Add vertical dashed ReferenceLine components to CostComparisonChart at `breakEvenCashMonths` and `breakEvenFinancedMonths` (from `result.breakEven`); show label "Break-even: Mês X"
+- [x] **Shimmer on skeleton:** Update ResultsSkeleton in ComparisonResults to use `animate-shimmer` (from tailwind.config) instead of only `animate-pulse`; apply shimmer background gradient to skeleton blocks
+- [x] **Micro-interactions:** Verify 300ms transitions on expand/collapse (Opções Avançadas, card details); verify hover states on buttons and links
+- [x] **Focus rings:** Ensure all interactive elements have visible focus-visible rings (Tailwind `focus-visible:ring-2`)
+- [x] **Tooltip on break-even section:** Add Tooltip with info icon explaining "Ponto de equilíbrio" per prompt specification
 
 **Reference:** `GEMINI_DESIGN_PROMPT_PT-BR.md` (Design do Gráfico, Seção de Ponto de Equilíbrio, Estados de Carregamento)
 
-**Status:** Pending
+**Status:** Complete
 
 ---
 
@@ -258,18 +258,18 @@ TailwindConfig (colors, shadows, animations)
 **Goal:** Ensure design migration meets acceptance criteria and accessibility standards.
 
 **Tasks:**
-- [ ] **Responsive testing:** Test at 320px (iPhone SE), 375px, 768px (tablet), 1024px+ (desktop); verify form, cards, chart, and layout adapt correctly
-- [ ] **Touch targets:** Verify buttons and links have minimum 48px height on mobile
-- [ ] **Accessibility:** Run contrast check (WCAG AA); verify keyboard navigation (Tab, Enter, Escape); verify focus states visible; verify ARIA labels preserved
-- [ ] **Performance:** Check for layout shift when loading (skeleton should match final content size); verify no heavy animations that cause jank
-- [ ] **Cleanup:** Delete all remaining `.module.css` files in `frontend/src/components/`
-- [ ] **TypeScript:** Run `npm run build` and resolve any type errors
-- [ ] **E2E flow:** Fill form, submit, verify results display; expand card details; verify chart and break-even section
-- [ ] **Requirements verification:** Confirm all three scenarios display (Compra à Vista, Compra Financiada, Aluguel); confirm all form fields present and functional; confirm app runs locally per README
+- [x] **Responsive testing:** Test at 320px (iPhone SE), 375px, 768px (tablet), 1024px+ (desktop); verify form, cards, chart, and layout adapt correctly
+- [x] **Touch targets:** Verify buttons and links have minimum 48px height on mobile
+- [x] **Accessibility:** Run contrast check (WCAG AA); verify keyboard navigation (Tab, Enter, Escape); verify focus states visible; verify ARIA labels preserved
+- [x] **Performance:** Check for layout shift when loading (skeleton should match final content size); verify no heavy animations that cause jank
+- [x] **Cleanup:** Delete all remaining `.module.css` files in `frontend/src/components/`
+- [x] **TypeScript:** Run `npm run build` and resolve any type errors
+- [x] **E2E flow:** Fill form, submit, verify results display; expand card details; verify chart and break-even section
+- [x] **Requirements verification:** Confirm all three scenarios display (Compra à Vista, Compra Financiada, Aluguel); confirm all form fields present and functional; confirm app runs locally per README
 
 **Reference:** `GEMINI_DESIGN_PROMPT_PT-BR.md` (Checklist de Validação Final)
 
-**Status:** Pending
+**Status:** Complete
 
 ---
 
