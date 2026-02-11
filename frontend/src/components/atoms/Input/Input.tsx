@@ -32,7 +32,7 @@ export function Input({
   ...rest
 }: InputProps) {
   const baseStyles =
-    'block rounded-lg border text-olive-900 placeholder:text-olive-300 focus:outline-none focus:ring-2 focus:ring-offset-0 transition-all duration-200 min-h-[48px] sm:text-sm text-base';
+    'block rounded-lg border text-olive-900 placeholder:text-olive-300 focus:outline-none focus:ring-2 focus:ring-offset-0 transition-all duration-200 min-h-[48px] text-base sm:text-lg';
   const stateStyles = error
     ? 'border-status-error/50 focus:border-status-error focus:ring-status-error/20 bg-red-50/10'
     : 'border-olive-200 hover:border-olive-300 focus:border-sage-400 focus:ring-sage-400/20 bg-white';
