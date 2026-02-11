@@ -52,7 +52,7 @@ CalculationInput
 
 ---
 
-## Phase 1: Environment Setup ✅
+## Phase 1: Environment Setup
 
 **Goal:** Set up development environment and project scaffolding.
 
@@ -114,7 +114,7 @@ CalculationInput
 
 ---
 
-## Phase 4: Backend – Cash Purchase Service ✅
+## Phase 4: Backend – Cash Purchase Service
 
 **Goal:** Implement cash purchase cost calculation in a pure service.
 
@@ -144,7 +144,7 @@ CalculationInput
 
 ---
 
-## Phase 5: Backend – Financed Purchase Service ✅
+## Phase 5: Backend – Financed Purchase Service
 
 **Goal:** Implement financed purchase cost calculation (Sistema Price).
 
@@ -182,7 +182,7 @@ CalculationInput
 
 ---
 
-## Phase 6: Backend – Rental Service ✅
+## Phase 6: Backend – Rental Service
 
 **Goal:** Implement rental cost calculation (simplest service).
 
@@ -348,7 +348,7 @@ CalculationInput
 
 **Reference:** README (API endpoints), backend types from Phase 2
 
-**Status:** Complete
+**Status:** ✅ Complete
 
 ---
 
@@ -365,7 +365,7 @@ CalculationInput
 
 **Reference:** `.cursor/rules/architecture.md` (atoms)
 
-**Status:** Complete
+**Status:** ✅ Complete
 
 ---
 
@@ -379,11 +379,11 @@ CalculationInput
 
 **Reference:** `.cursor/rules/architecture.md` (molecules)
 
-**Status:** Complete
+**Status:** ✅ Complete
 
 ---
 
-## Phase 15: Frontend – CalculatorForm Organism ✅
+## Phase 15: Frontend – CalculatorForm Organism
 
 **Goal:** Full form with all inputs and submit, state managed locally.
 
@@ -436,7 +436,7 @@ CalculationInput
 
 **Reference:** domain/types/index.ts (CalculationResponse structure)
 
-**Status:** Complete
+**Status:** ✅ Complete
 
 ---
 
@@ -452,7 +452,7 @@ CalculationInput
 - [x] In `App.tsx`: render CalculatorPage, basic layout (header optional)
 - [x] Verify: run front + back, fill form, submit, see results
 
-**Status:** Complete
+**Status:** ✅ Complete
 
 ---
 
@@ -467,7 +467,7 @@ CalculationInput
 - [x] Optional: light/dark theme or consistent color palette
 - [x] Optional: tooltips for IPVA, custo de oportunidade, Sistema Price
 
-**Status:** Complete
+**Status:** ✅ Complete
 
 ---
 
@@ -493,7 +493,7 @@ CalculationInput
 
 **Reference:** financial-formulas.md § 4 (break-even visualization), README
 
-**Status:** Complete
+**Status:** ✅ Complete
 
 ---
 
@@ -524,7 +524,7 @@ CalculationInput
   - Financial formula decisions (exponential depreciation, compound interest)
   - What would be added with more time (database persistence, user accounts, additional scenarios)
 
-**Status:** Complete
+**Status:** ✅ Complete
 
 ---
 
@@ -554,7 +554,7 @@ CalculationInput
 
 **Reference:** `.cursor/rules/architecture.md` (Testing Strategy)
 
-**Status:** Completed
+**Status:** ✅ Complete
 
 ---
 
