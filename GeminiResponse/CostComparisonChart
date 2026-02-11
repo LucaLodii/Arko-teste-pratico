@@ -1,0 +1,147 @@
+import { 
+    LineChart, 
+    Line, 
+    XAxis, 
+    YAxis, 
+    CartesianGrid, 
+    Tooltip, 
+    Legend, 
+    ResponsiveContainer,
+    ReferenceLine,
+    Label
+  } from 'recharts';
+  
+  // Dados Mockados (mantendo consistência com o exemplo anterior)
+  const mockData = Array.from({ length: 48 }, (_, i) => ({
+    month: i + 1,
+    cash: 50000 + (i * 500), 
+    financed: 55000 + (i * 1200),
+    rental: 2200 * (i + 1),
+  }));
+  
+  // Mock dos pontos de equilíbrio (no app real viriam via props)
+  const breakEvenPoints = [
+    { x: 29, label: 'BEP Aluguel' }
+  ];
+  
+  interface ChartProps {
+    data?: any[];
+    showBreakEven?: boolean;
+  }
+  
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-olive-900 border border-olive-700 p-3 rounded-lg shadow-xl text-xs z-50">
+          <p className="text-sage-200 mb-2 font-medium border-b border-olive-700 pb-1">
+            Mês {label}
+          </p>
+          {payload.map((entry: any, index: number) => (
+            <div key={index} className="flex items-center justify-between gap-4 mb-1">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }}></span>
+                <span className="text-olive-100">{entry.name}</span>
+              </div>
+              <span className="text-white font-mono font-bold">
+                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(entry.value)}
+              </span>
+            </div>
+          ))}
+        </div>
+      );
+    }
+    return null;
+  };
+  
+  export function CostComparisonChart({ data = mockData, showBreakEven = true }: ChartProps) {
+    return (
+      <div className="w-full h-full font-sans">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            data={data}
+            margin={{ top: 20, right: 30, left: 0, bottom: 10 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E0E3DF" />
+            
+            <XAxis 
+              dataKey="month" 
+              tick={{ fill: '#687764', fontSize: 12 }} 
+              axisLine={false}
+              tickLine={false}
+              dy={10}
+              label={{ value: 'Meses', position: 'insideBottomRight', offset: -5, fill: '#859281', fontSize: 12 }}
+            />
+            
+            <YAxis 
+              tick={{ fill: '#687764', fontSize: 12 }} 
+              axisLine={false}
+              tickLine={false}
+              tickFormatter={(value) => `R$${value/1000}k`}
+              dx={-10}
+              width={60}
+            />
+            
+            <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#ACC8A2', strokeWidth: 1 }} />
+            
+            <Legend 
+              verticalAlign="top" 
+              height={36} 
+              iconType="circle"
+              wrapperStyle={{ fontSize: '14px', fontWeight: 500, color: '#1A2517', paddingTop: '0px' }}
+            />
+            
+            {/* BREAK-EVEN MARKERS (Reference Lines) */}
+            {showBreakEven && breakEvenPoints.map((point, index) => (
+              <ReferenceLine 
+                key={index} 
+                x={point.x} 
+                stroke="#5B8C9B" // Info color
+                strokeDasharray="4 4" 
+                strokeWidth={2}
+                isFront={true}
+              >
+                <Label 
+                  value="Ponto de Equilíbrio" 
+                  position="insideTopRight" 
+                  fill="#5B8C9B" 
+                  fontSize={11}
+                  fontWeight={600}
+                  angle={-90}
+                  offset={10}
+                />
+              </ReferenceLine>
+            ))}
+  
+            {/* Lines */}
+            <Line 
+              type="monotone" 
+              dataKey="cash" 
+              name="À Vista" 
+              stroke="#58764E" 
+              strokeWidth={3} 
+              dot={false}
+              activeDot={{ r: 6, strokeWidth: 0, fill: '#58764E' }}
+            />
+            <Line 
+              type="monotone" 
+              dataKey="financed" 
+              name="Financiado" 
+              stroke="#C89F65" 
+              strokeWidth={3} 
+              dot={false}
+              activeDot={{ r: 6, strokeWidth: 0, fill: '#C89F65' }}
+            />
+            <Line 
+              type="monotone" 
+              dataKey="rental" 
+              name="Aluguel" 
+              stroke="#64748B" 
+              strokeWidth={3} 
+              dot={false}
+              activeDot={{ r: 6, strokeWidth: 0, fill: '#64748B' }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    );
+  }

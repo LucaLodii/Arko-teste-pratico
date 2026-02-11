@@ -133,6 +133,14 @@ Recruiters are assessing:
 - **Commit Rules:** [commit-rules.md](./commit-rules.md)
 - **Project Documentation:** [README.md](../../README.md)
 - **Progress Tracking:** [PHASES.md](../../PHASES.md)
+- **Design Migration:** [DESIGN-PHASES.md](../../DESIGN-PHASES.md)
+
+### AI Rules (Context-Aware)
+
+- **pre-implementation-workflow.mdc** – Always applies: check phase, read referenced docs before implementing
+- **requirements-traceability.mdc** – Frontend/design: preserve project requirements
+- **design-system.mdc** – Frontend components: Tailwind, import paths, hierarchy
+- **design-patterns.mdc** – TypeScript code: quick reference for backend/frontend patterns
 
 ---
 

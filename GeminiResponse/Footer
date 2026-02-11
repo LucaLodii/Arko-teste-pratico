@@ -1,0 +1,85 @@
+import React from 'react';
+import { Icon } from '../atoms/Icon';
+
+export function Footer() {
+  const currentYear = new Date().getFullYear();
+
+  return (
+    <footer className="bg-white border-t border-olive-100 pt-12 md:pt-16 pb-8">
+      <div className="max-w-[1200px] mx-auto px-4 md:px-8">
+        
+        {/* Conteúdo Principal */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
+          
+          {/* Coluna Esquerda: Sobre */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-bold text-olive-900 flex items-center gap-2">
+              <span className="w-8 h-8 bg-sage-100 text-sage-700 rounded-lg flex items-center justify-center">
+                <Icon name="calculator" size="sm" />
+              </span>
+              FinanceCalc Brasil
+            </h3>
+            <p className="text-olive-600 leading-relaxed max-w-md">
+              Uma ferramenta open-source desenvolvida para ajudar brasileiros a tomarem 
+              melhores decisões financeiras automotivas. Sem viés, apenas matemática.
+            </p>
+            <div className="pt-2">
+              <p className="text-xs font-semibold text-olive-400 uppercase tracking-wider mb-2">
+                Tech Stack
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {['React 19', 'TypeScript', 'Tailwind CSS', 'Recharts'].map((tech) => (
+                  <span key={tech} className="px-2 py-1 bg-olive-50 text-olive-600 text-xs rounded border border-olive-100">
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Coluna Direita: Contato e Social */}
+          <div className="md:flex md:flex-col md:items-end md:text-right">
+            <h3 className="text-lg font-bold text-olive-900 mb-4">Contato & Código</h3>
+            <div className="flex flex-col gap-3 md:items-end">
+              <a 
+                href="https://www.linkedin.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="group flex items-center gap-3 text-olive-600 hover:text-sage-700 transition-colors"
+              >
+                <span className="text-sm font-medium">Conectar no LinkedIn</span>
+                <span className="p-2 bg-olive-50 rounded-full group-hover:bg-sage-100 transition-colors">
+                  <Icon name="linkedin" size="md" />
+                </span>
+              </a>
+              
+              <a 
+                href="https://github.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="group flex items-center gap-3 text-olive-600 hover:text-sage-700 transition-colors"
+              >
+                <span className="text-sm font-medium">Ver código no GitHub</span>
+                <span className="p-2 bg-olive-50 rounded-full group-hover:bg-sage-100 transition-colors">
+                  <Icon name="github" size="md" />
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Barra de Copyright */}
+        <div className="border-t border-olive-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-olive-400">
+          <p>
+            © {currentYear} FinanceCalc Brasil. Todos os direitos reservados.
+          </p>
+          <div className="flex gap-6">
+            <a href="#" className="hover:text-sage-600 transition-colors">Privacidade</a>
+            <a href="#" className="hover:text-sage-600 transition-colors">Termos de Uso</a>
+          </div>
+        </div>
+
+      </div>
+    </footer>
+  );
+}
