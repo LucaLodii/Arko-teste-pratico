@@ -204,6 +204,7 @@ npm run dev       # Start development server
 npm run build     # Build for production
 npm run preview   # Preview production build
 npm run lint      # Run ESLint
+npm test          # Run unit tests (Vitest)
 ```
 
 **Backend:**
@@ -211,6 +212,8 @@ npm run lint      # Run ESLint
 npm run dev       # Start development server (ts-node)
 npm run build     # Compile TypeScript to JavaScript
 npm start         # Run compiled production build
+npm test          # Run unit and integration tests (Jest)
+npm run test:coverage   # Run tests with coverage report
 ```
 
 ### Building for Production

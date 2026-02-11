@@ -533,28 +533,28 @@ CalculationInput
 **Goal:** Add tests after tudo funcionando (improves score).
 
 **Tasks:**
-- [ ] Backend: Set up Jest + TypeScript support
+- [x] Backend: Set up Jest + TypeScript support
   - `npm install --save-dev jest @types/jest ts-jest`
   - Create jest.config.js with ts-jest preset
-- [ ] Backend unit tests (create `backend/src/__tests__/` folder):
+- [x] Backend unit tests (create `backend/src/__tests__/` folder):
   - Test OpportunityCostService.calculate with known values
   - Test Sistema Price formula in FinancedPurchaseService (parcela calculation)
   - Test depreciation logic in CashPurchaseService
   - Mock dependencies where needed (jest.mock)
-- [ ] Backend integration test:
+- [x] Backend integration test:
   - Install Supertest: `npm install --save-dev supertest @types/supertest`
   - Test POST /api/calculate end-to-end with valid input → expect 200 and valid structure
   - Test POST /api/calculate with invalid input → expect 400 with Zod error
-- [ ] Frontend (optional, bonus points):
+- [x] Frontend (optional, bonus points):
   - Vitest already configured with Vite
   - Test formatters (formatCurrency, formatPercent)
   - Test InputField molecule rendering
-- [ ] Update package.json scripts: `"test": "jest"` in backend, `"test": "vitest"` in frontend
-- [ ] Ensure all tests pass: `npm test` in both folders
+- [x] Update package.json scripts: `"test": "jest"` in backend, `"test": "vitest"` in frontend
+- [x] Ensure all tests pass: `npm test` in both folders
 
 **Reference:** `.cursor/rules/architecture.md` (Testing Strategy)
 
-**Status:** Not started
+**Status:** Completed
 
 ---
 
