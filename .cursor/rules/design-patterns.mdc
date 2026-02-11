@@ -1,0 +1,41 @@
+---
+description: Quick reference for design patterns used in this project
+globs: frontend/**/*.ts, frontend/**/*.tsx, backend/**/*.ts
+alwaysApply: false
+---
+
+# Design Patterns Quick Reference
+
+## Backend
+
+- **Architecture:** Hexagonal (Ports and Adapters)
+- **Flow:** HTTP → Routes → Controller → Use Case → Services → Domain
+- **Services:** Pure functions, class-based, dependency injection via constructor
+- **Validation:** Zod in adapters/validators, before controller
+- **Dependencies:** Point inward (domain has none, adapters depend on application)
+
+## Frontend
+
+- **Architecture:** Atomic Design
+- **Flow:** Page → Organisms → Molecules → Atoms
+- **State:** CalculatorPage holds result, input, loading, error; passes down via props
+- **API:** calculationService.calculate(input) → onCalculate(result, input)
+- **Timeline:** GET /api/calculate-timeline for chart data
+
+## Form Handling
+
+- **Pattern:** Controlled components with local state
+- **Validation:** Client-side before submit, server-side via Zod
+- **Loading:** Button disabled + "Calculando..." while awaiting API
+
+## Styling
+
+- **Framework:** Tailwind CSS
+- **Palette:** Sage (primary), Olive (text/structure), scenario colors for chart
+- **Layout:** max-w-[1200px] container, responsive grid (1 col mobile, 2–3 cols desktop)
+
+## Error Handling
+
+- **Frontend:** onError callback, display in ComparisonResults or form
+- **Backend:** Zod errors → 400 with details; other errors → 500
+- **Types:** CalculationResponse from API; null/error states in UI

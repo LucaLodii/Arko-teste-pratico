@@ -1,0 +1,37 @@
+---
+description: Tailwind design system and component hierarchy for frontend
+globs: frontend/src/components/**/*.tsx
+alwaysApply: false
+---
+
+# Frontend Design System Rules
+
+When editing or creating components in `frontend/src/components/`:
+
+## Styling
+
+- Use Tailwind CSS only; no CSS Modules during/after design migration
+- Color palette: `sage-*`, `olive-*`, `scenario-cash`, `scenario-financed`, `scenario-rental`, `status-success`, `status-error`, `status-warning`, `status-info`
+- Typography: `.text-h1`, `.text-h2`, `.text-h3`, `.text-body`, `.text-small`, `.text-currency` (from index.css)
+
+## Import Paths
+
+- **Organisms** (`organisms/X/`): import from `../../atoms`, `../../molecules`
+- **Molecules** (`molecules/X/`): import from `../../atoms`
+- **Atoms** (`atoms/X/`): import from sibling atoms, e.g. `../Spinner`, `../Icon`
+
+## Component Hierarchy
+
+- **Atoms:** Icon, Spinner, Label, Tooltip, Input, Button, Card (no dependencies on other atoms except Button→Spinner, Tooltip→Icon)
+- **Molecules:** InputField = Label + Input + optional Tooltip + Error/Helper
+- **Organisms:** Header, Footer, CalculatorForm, ComparisonResults, CostComparisonChart
+
+## Types
+
+- Use types from `frontend/src/types/calculation.types.ts` (CalculationInput, CalculationResponse, etc.)
+- Never use `any` for calculation or API data
+
+## Reference
+
+- DESIGN-PHASES.md for migration order and validation
+- GeminiResponse/ folder for styled component implementations

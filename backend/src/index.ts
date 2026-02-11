@@ -1,13 +1,13 @@
-import express from "express";
+/**
+ * Backend entry point – starts the server.
+ *
+ * Reference: .cursor/rules/architecture.md (Infrastructure section)
+ */
 
-const app = express();
+import { createApp } from './app';
+
+const app = createApp();
 const PORT = process.env.PORT ?? 3000;
-
-app.use(express.json());
-
-app.get("/api/health", (_req, res) => {
-  res.json({ status: "ok" });
-});
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);

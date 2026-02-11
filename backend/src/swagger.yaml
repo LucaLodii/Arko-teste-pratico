@@ -1,0 +1,285 @@
+openapi: 3.0.0
+info:
+  title: Rent vs Buy Car Calculator API
+  version: 1.0.0
+  description: API for comparing cash purchase, financed purchase, and rental scenarios.
+
+servers:
+  - url: http://localhost:3000
+    description: Local development
+
+paths:
+  /api/health:
+    get:
+      summary: Health check
+      description: Returns server status
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  /api/calculate:
+    post:
+      summary: Calculate rent vs buy comparison
+      description: Compares cash purchase, financed purchase, and rental scenarios over the analysis period.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CalculationInput'
+      responses:
+        '200':
+          description: Calculation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalculationResponse'
+        '400':
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalError'
+
+  /api/calculate-timeline:
+    post:
+      summary: Calculate cost timeline
+      description: Returns cumulative costs per month for cash, financed, and rental scenarios. Used for cost-over-time chart visualization.
+      tags:
+        - Calculation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CalculationInput'
+      responses:
+        '200':
+          description: Timeline calculation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimelineResponse'
+        '400':
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalError'
+
+components:
+  schemas:
+    CalculationInput:
+      type: object
+      required:
+        - carValue
+        - monthlyRent
+        - interestRateMonth
+        - financingTermMonths
+        - analysisPeriodMonths
+      properties:
+        carValue:
+          type: number
+          description: Vehicle purchase price in currency
+        monthlyRent:
+          type: number
+          description: Monthly rental subscription cost
+        interestRateMonth:
+          type: number
+          description: Monthly interest rate for financing (e.g., 0.015 = 1.5%)
+        financingTermMonths:
+          type: number
+          description: Loan term in months (e.g., 48)
+        analysisPeriodMonths:
+          type: number
+          description: Analysis period in months (e.g., 48)
+        downPaymentPercent:
+          type: number
+          description: Down payment percentage (optional, default 25%)
+        maintenanceAnnual:
+          type: number
+          description: Annual maintenance cost (optional, default 2000)
+        insuranceRateAnnual:
+          type: number
+          description: Annual insurance rate (optional, default 0.06 = 6%)
+        ipvaRate:
+          type: number
+          description: IPVA tax rate (optional, default 0.04 = 4%)
+        depreciationRate:
+          type: array
+          items:
+            type: number
+          description: Depreciation rates per year (optional, defaults to [0.20, 0.15, 0.15, 0.10, 0.10])
+
+    CashPurchaseBreakdown:
+      type: object
+      properties:
+        depreciacao:
+          type: number
+          description: Total depreciation over the period
+        ipva:
+          type: number
+          description: Total IPVA (vehicle tax) over the period
+        seguro:
+          type: number
+          description: Total insurance cost over the period
+        manutencao:
+          type: number
+          description: Total maintenance cost over the period
+        custoOportunidade:
+          type: number
+          description: Opportunity cost of capital invested
+
+    CashPurchaseResult:
+      type: object
+      properties:
+        totalCost:
+          type: number
+          description: Total cost over the analysis period
+        breakdown:
+          $ref: '#/components/schemas/CashPurchaseBreakdown'
+
+    FinancedPurchaseBreakdown:
+      type: object
+      properties:
+        totalParcelas:
+          type: number
+          description: Total amount paid in installments
+        totalJuros:
+          type: number
+          description: Total interest paid on the loan
+        ipva:
+          type: number
+          description: Total IPVA (vehicle tax) over the period
+        seguro:
+          type: number
+          description: Total insurance cost over the period
+        manutencao:
+          type: number
+          description: Total maintenance cost over the period
+        custoOportunidade:
+          type: number
+          description: Opportunity cost of down payment
+
+    FinancedPurchaseResult:
+      type: object
+      properties:
+        totalCost:
+          type: number
+          description: Total cost over the analysis period
+        parcela:
+          type: number
+          description: Monthly installment amount (Price system)
+        totalJuros:
+          type: number
+          description: Total interest paid on the loan
+        breakdown:
+          $ref: '#/components/schemas/FinancedPurchaseBreakdown'
+
+    RentalResult:
+      type: object
+      properties:
+        totalCost:
+          type: number
+          description: Total rental cost over the period
+        monthlyCost:
+          type: number
+          description: Monthly rental cost
+
+    BreakEvenResult:
+      type: object
+      properties:
+        breakEvenCashMonths:
+          type: number
+          nullable: true
+          description: Month when rental cost equals cash purchase cost (null if never)
+        breakEvenFinancedMonths:
+          type: number
+          nullable: true
+          description: Month when rental cost equals financed purchase cost (null if never)
+
+    CalculationResponse:
+      type: object
+      properties:
+        cashPurchase:
+          $ref: '#/components/schemas/CashPurchaseResult'
+        financedPurchase:
+          $ref: '#/components/schemas/FinancedPurchaseResult'
+        rental:
+          $ref: '#/components/schemas/RentalResult'
+        breakEven:
+          $ref: '#/components/schemas/BreakEvenResult'
+
+    TimelineDataPoint:
+      type: object
+      required:
+        - month
+        - cashCost
+        - financedCost
+        - rentalCost
+      properties:
+        month:
+          type: integer
+          minimum: 1
+          description: Month number (1 to analysisPeriodMonths)
+        cashCost:
+          type: number
+          description: Cumulative cash purchase cost at this month
+        financedCost:
+          type: number
+          description: Cumulative financed purchase cost at this month
+        rentalCost:
+          type: number
+          description: Cumulative rental cost at this month
+
+    TimelineResponse:
+      type: object
+      properties:
+        timeline:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimelineDataPoint'
+          description: Array of cost data points, one per month
+
+    ValidationError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Validation failed
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              path:
+                type: string
+              message:
+                type: string
+
+    InternalError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Internal server error

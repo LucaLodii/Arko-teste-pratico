@@ -1,0 +1,38 @@
+---
+description: Before implementing, check current phase and read referenced docs
+alwaysApply: true
+---
+
+# Pre-Implementation Workflow
+
+Before writing any code or making changes:
+
+## 1. Determine Which Document Applies
+
+- **PHASES.md** – Backend logic, API, calculation services, frontend logic (types, services, forms)
+- **DESIGN-PHASES.md** – Frontend design migration (Tailwind, styling, UI components)
+
+## 2. Check Current Phase
+
+- Open the relevant phases document
+- Identify the current phase (lowest unchecked phase)
+- Do not skip phases
+- Do not merge phases – one phase = one focused prompt
+
+## 3. Read Referenced Docs First
+
+When a phase or task says:
+- "Reference: X" or "Before starting: read Y"
+- Read that file before writing code
+- Do not assume you know its contents
+- Apply constraints and patterns from that file
+
+## 4. Verify Prerequisites
+
+- Confirm all "Before starting" tasks are done
+- Check that dependencies for the current phase are complete (e.g. atoms before molecules)
+
+## 5. Follow Phase Constraints
+
+- Respect any "Constraint" or "Do NOT" sections in the phase
+- Stick to specified file paths; do not invent alternatives
