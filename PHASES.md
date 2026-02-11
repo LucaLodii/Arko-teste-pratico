@@ -383,32 +383,32 @@ CalculationInput
 
 ---
 
-## Phase 15: Frontend – CalculatorForm Organism
+## Phase 15: Frontend – CalculatorForm Organism ✅
 
 **Goal:** Full form with all inputs and submit, state managed locally.
 
 **Tasks:**
-- [ ] Create `frontend/src/components/organisms/CalculatorForm/`
-- [ ] Basic inputs state (always visible):
+- [x] Create `frontend/src/components/organisms/CalculatorForm/`
+- [x] Basic inputs state (always visible):
   - carValue (default: 50000)
   - monthlyRent (default: 2200)
   - interestRateMonth (default: 0.015 - display as 1.5% with proper formatting)
   - financingTermMonths (default: 48)
   - analysisPeriodMonths (default: 48)
-- [ ] Optional collapsible "Opções Avançadas" section with:
+- [x] Optional collapsible "Opções Avançadas" section with:
   - downPaymentPercent (default: 0.25 - display as 25%)
   - maintenanceAnnual (default: 2000)
   - insuranceRateAnnual (default: 0.06 - display as 6%)
   - ipvaRate (default: 0.04 - display as 4%)
-- [ ] Compose InputField molecules for each field, Button for submit
-- [ ] Input type="number" with proper min/max/step attributes
-- [ ] onSubmit handler: validate, call `calculationService.calculate(input)`, pass result to parent via callback
-- [ ] Loading state: disable button and show "Calculando..." while waiting
-- [ ] Error handling: display API errors in user-friendly format
+- [x] Compose InputField molecules for each field, Button for submit
+- [x] Input type="number" with proper min/max/step attributes
+- [x] onSubmit handler: validate, call `calculationService.calculate(input)`, pass result to parent via callback
+- [x] Loading state: disable button and show "Calculando..." while waiting
+- [x] Error handling: display API errors in user-friendly format
 
 **Reference:** `.cursor/rules/architecture.md` (organisms), financial-formulas.md (defaults)
 
-**Status:** Not started
+**Status:** ✅ Complete
 
 ---
 
