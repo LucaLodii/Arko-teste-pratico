@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Header, CalculatorForm, ComparisonResults } from '../../organisms';
+import { Header, Footer, CalculatorForm, ComparisonResults } from '../../organisms';
 import { Card } from '../../atoms';
 import type {
   CalculationInput,
@@ -53,6 +53,8 @@ export function CalculatorPage() {
           error={error}
         />
       </section>
+
+      <Footer />
     </div>
   );
 }
