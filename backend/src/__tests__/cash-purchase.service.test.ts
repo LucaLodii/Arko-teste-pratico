@@ -20,6 +20,8 @@ describe('CashPurchaseService', () => {
   });
 
   beforeEach(() => {
+    // Mock returns 10000 to isolate CashPurchaseService logic
+    // Actual value doesn't matter since we're testing service independently
     mockOpportunityCostService = {
       calculate: jest.fn().mockReturnValue(10000),
     } as unknown as jest.Mocked<OpportunityCostService>;
@@ -114,6 +116,37 @@ describe('CashPurchaseService', () => {
       expect(result.breakdown.seguro).toBeCloseTo(2500, 0);
       // Maintenance: 3000
       expect(result.breakdown.manutencao).toBe(3000);
+    });
+
+    it('should handle very small car values', () => {
+      const input = createInput({
+        carValue: 50,
+        analysisPeriodMonths: 12,
+      });
+      const result = service.calculate(input);
+
+      expect(result.totalCost).toBeGreaterThan(0);
+      expect(result.breakdown.depreciacao).toBeLessThanOrEqual(50);
+    });
+
+    it('should handle 1 month analysis period', () => {
+      const input = createInput({ analysisPeriodMonths: 1 });
+      const result = service.calculate(input);
+
+      // Prorated maintenance: 2000 / 12 ≈ 166.67
+      expect(result.breakdown.manutencao).toBeCloseTo(166.67, 1);
+    });
+
+    it('should handle analysis period longer than depreciation array', () => {
+      const input = createInput({
+        analysisPeriodMonths: 120, // 10 years
+        depreciationRate: [0.2, 0.15, 0.15, 0.1, 0.1], // 5 years
+      });
+      const result = service.calculate(input);
+
+      // Should continue using last rate (0.1) for years 6-10
+      expect(result.breakdown.depreciacao).toBeGreaterThan(0);
+      expect(result.breakdown.depreciacao).toBeLessThan(50000);
     });
   });
 });

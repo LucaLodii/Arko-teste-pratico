@@ -25,7 +25,9 @@ import { createCalculationRoutes } from './routes/calculation.routes';
 export function createApp(): express.Application {
   const app = express();
 
-  app.use(cors({ origin: process.env.FRONTEND_URL || '*' }));
+  // CORS: allow comma-separated FRONTEND_URL for multiple envs (staging + production)
+  const allowedOrigins = process.env.FRONTEND_URL?.split(',').map((o) => o.trim()) || ['*'];
+  app.use(cors({ origin: allowedOrigins }));
   app.use(express.json());
 
   // Swagger API docs

@@ -8,4 +8,6 @@ module.exports = {
     '!src/**/*.d.ts',
     '!src/index.ts',
   ],
+  clearMocks: true,
+  restoreMocks: true,
 };

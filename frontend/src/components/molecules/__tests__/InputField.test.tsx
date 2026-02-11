@@ -47,7 +47,11 @@ describe('InputField', () => {
     fireEvent.change(input, { target: { value: 'test' } });
 
     expect(handleChange).toHaveBeenCalledTimes(1);
-    expect(handleChange).toHaveBeenCalledWith(expect.any(Object));
+
+    const event = handleChange.mock.calls[0][0];
+    expect(event).toHaveProperty('type', 'change');
+    expect(event).toHaveProperty('target');
+    expect(event.target).toBeInstanceOf(HTMLInputElement);
   });
 
   it('should render number input when type is number', () => {

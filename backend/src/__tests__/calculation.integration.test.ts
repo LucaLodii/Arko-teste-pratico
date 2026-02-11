@@ -3,10 +3,11 @@
  */
 
 import request from 'supertest';
+import type express from 'express';
 import { createApp } from '../app';
 
 describe('Calculation API', () => {
-  const app = createApp();
+  let app: express.Application;
 
   const validInput = {
     carValue: 50000,
@@ -19,6 +20,10 @@ describe('Calculation API', () => {
     insuranceRateAnnual: 0.06,
     ipvaRate: 0.04,
   };
+
+  beforeEach(() => {
+    app = createApp();
+  });
 
   describe('GET /api/health', () => {
     it('should return 200 with status ok', async () => {
@@ -98,6 +103,107 @@ describe('Calculation API', () => {
 
       expect(res.status).toBe(400);
       expect(res.body).toHaveProperty('error', 'Validation failed');
+    });
+
+    it('should return 400 for empty body', async () => {
+      const res = await request(app)
+        .post('/api/calculate')
+        .send({})
+        .set('Content-Type', 'application/json');
+
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty('error', 'Validation failed');
+      expect(res.body).toHaveProperty('details');
+      expect(Array.isArray(res.body.details)).toBe(true);
+    });
+
+    it('should return 400 for malformed JSON', async () => {
+      const res = await request(app)
+        .post('/api/calculate')
+        .send('{invalid json}')
+        .set('Content-Type', 'application/json')
+        .type('application/json');
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should handle large numbers without crashing', async () => {
+      const res = await request(app)
+        .post('/api/calculate')
+        .send({
+          ...validInput,
+          carValue: 1e12,
+          monthlyRent: 1e6,
+        })
+        .set('Content-Type', 'application/json');
+
+      expect(res.status).toBe(200);
+      expect(typeof res.body.cashPurchase.totalCost).toBe('number');
+      expect(typeof res.body.financedPurchase.totalCost).toBe('number');
+      expect(typeof res.body.rental.totalCost).toBe('number');
+    });
+  });
+
+  describe('POST /api/calculate-timeline', () => {
+    it('should return 200 with timeline array for valid input', async () => {
+      const res = await request(app)
+        .post('/api/calculate-timeline')
+        .send(validInput)
+        .set('Content-Type', 'application/json');
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty('timeline');
+      expect(Array.isArray(res.body.timeline)).toBe(true);
+      expect(res.body.timeline.length).toBeGreaterThan(0);
+
+      const firstPoint = res.body.timeline[0];
+      expect(firstPoint).toHaveProperty('month');
+      expect(firstPoint).toHaveProperty('cashCost');
+      expect(firstPoint).toHaveProperty('financedCost');
+      expect(firstPoint).toHaveProperty('rentalCost');
+
+      expect(typeof firstPoint.month).toBe('number');
+      expect(typeof firstPoint.cashCost).toBe('number');
+      expect(typeof firstPoint.financedCost).toBe('number');
+      expect(typeof firstPoint.rentalCost).toBe('number');
+    });
+
+    it('should return 400 with Zod error for missing required fields', async () => {
+      const res = await request(app)
+        .post('/api/calculate-timeline')
+        .send({ carValue: 50000 })
+        .set('Content-Type', 'application/json');
+
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty('error', 'Validation failed');
+      expect(res.body).toHaveProperty('details');
+      expect(Array.isArray(res.body.details)).toBe(true);
+    });
+
+    it('should return 400 with Zod error for negative values', async () => {
+      const res = await request(app)
+        .post('/api/calculate-timeline')
+        .send({
+          ...validInput,
+          carValue: -1000,
+        })
+        .set('Content-Type', 'application/json');
+
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty('error', 'Validation failed');
+      expect(res.body).toHaveProperty('details');
+    });
+
+    it('should return 400 for empty body', async () => {
+      const res = await request(app)
+        .post('/api/calculate-timeline')
+        .send({})
+        .set('Content-Type', 'application/json');
+
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty('error', 'Validation failed');
+      expect(res.body).toHaveProperty('details');
+      expect(Array.isArray(res.body.details)).toBe(true);
     });
   });
 });

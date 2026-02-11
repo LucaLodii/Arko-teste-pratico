@@ -564,11 +564,19 @@ CalculationInput
 
 **Tasks:**
 - [ ] You: Deploy backend (Railway, Render, etc.) and frontend (Vercel, Netlify)
-- [ ] Set env vars: VITE_API_URL, FRONTEND_URL for CORS
-- [ ] Add live URL to README and submission
-- [ ] Reference: README "Deployment" section
+- [x] Set env vars: VITE_API_URL, FRONTEND_URL for CORS (CORS config updated for comma-separated origins)
+- [x] Add live URL section to README and deployment docs (DEPLOYMENT.md, README updated)
+- [x] Reference: README "Deployment" section
 
-**Status:** Not started
+**Preparation complete:**
+- `backend/Procfile` (Heroku)
+- `backend/nixpacks.toml` (Railway)
+- `render.yaml` (Render)
+- `frontend/vercel.json`, `frontend/netlify.toml`
+- `scripts/smoke-test.js` for deployment verification
+- `DEPLOYMENT.md` with step-by-step instructions
+
+**Status:** Ready for deployment (user deploys to chosen platforms)
 
 ---
 

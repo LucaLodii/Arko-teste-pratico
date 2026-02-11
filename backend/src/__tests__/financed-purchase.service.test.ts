@@ -20,6 +20,8 @@ describe('FinancedPurchaseService', () => {
   });
 
   beforeEach(() => {
+    // Mock returns 5000 to isolate FinancedPurchaseService logic
+    // Actual value doesn't matter since we're testing service independently
     mockOpportunityCostService = {
       calculate: jest.fn().mockReturnValue(5000),
     } as unknown as jest.Mocked<OpportunityCostService>;
@@ -136,6 +138,58 @@ describe('FinancedPurchaseService', () => {
         result.parcela * 48,
         2
       );
+    });
+
+    it('should handle zero down payment', () => {
+      const input = createInput({
+        carValue: 50000,
+        downPaymentPercent: 0,
+      });
+      const result = service.calculate(input);
+
+      // entrada = 0, valorFinanciado = 50000
+      expect(mockOpportunityCostService.calculate).toHaveBeenCalledWith(0, 4);
+      expect(result.breakdown.custoOportunidade).toBe(5000); // mocked value
+    });
+
+    it('should handle 100% down payment (cash-like)', () => {
+      const input = createInput({
+        carValue: 50000,
+        downPaymentPercent: 1.0,
+      });
+      const result = service.calculate(input);
+
+      // valorFinanciado = 0, parcela = 0
+      expect(result.parcela).toBe(0);
+      expect(result.breakdown.totalParcelas).toBe(0);
+      expect(result.breakdown.totalJuros).toBe(0);
+    });
+
+    it('should handle analysis period much longer than financing term', () => {
+      const input = createInput({
+        analysisPeriodMonths: 120,
+        financingTermMonths: 24,
+      });
+      const result = service.calculate(input);
+
+      // Should only pay 24 installments
+      expect(result.breakdown.totalParcelas).toBeCloseTo(
+        result.parcela * 24,
+        2
+      );
+    });
+
+    it('should handle very short financing term (6 months)', () => {
+      const input = createInput({
+        carValue: 10000,
+        financingTermMonths: 6,
+        analysisPeriodMonths: 6,
+      });
+      const result = service.calculate(input);
+
+      // High monthly payment, low total interest
+      expect(result.parcela).toBeGreaterThan(1000);
+      expect(result.breakdown.totalJuros).toBeLessThan(500);
     });
   });
 });

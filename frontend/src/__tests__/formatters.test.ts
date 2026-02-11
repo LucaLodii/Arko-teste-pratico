@@ -5,18 +5,15 @@
 import { describe, it, expect } from 'vitest';
 import { formatCurrency, formatPercent, formatNumber } from '../utils/formatters';
 
+const NBSP = '\u00A0'; // Non-breaking space used by Intl.NumberFormat for currency
+
 describe('formatCurrency', () => {
   it('should format positive values with R$ prefix', () => {
-    const result = formatCurrency(50000);
-    expect(result).toContain('R$');
-    expect(result).toContain('50');
-    expect(result).toContain('000');
+    expect(formatCurrency(50000)).toBe(`R$${NBSP}50.000`);
   });
 
   it('should format decimal values with proper rounding', () => {
-    const result = formatCurrency(1234.567);
-    expect(result).toContain('R$');
-    expect(result).toContain('1.234');
+    expect(formatCurrency(1234.567)).toBe(`R$${NBSP}1.234,57`);
   });
 
   it('should handle non-finite values', () => {
@@ -26,41 +23,30 @@ describe('formatCurrency', () => {
   });
 
   it('should respect maximumFractionDigits option', () => {
-    const result = formatCurrency(1234.567, 0);
-    expect(result).toContain('R$');
-    expect(result).not.toMatch(/,\d{2}$/);
+    expect(formatCurrency(1234.567, 0)).toBe(`R$${NBSP}1.235`);
   });
 
   it('should use Brazilian locale (comma as decimal separator)', () => {
-    const result = formatCurrency(1000.5);
-    expect(result).toMatch(/[.,]\d/);
+    expect(formatCurrency(1000.5)).toBe(`R$${NBSP}1.000,5`);
   });
 });
 
 describe('formatPercent', () => {
   it('should format decimal to percent', () => {
-    const result = formatPercent(0.015);
-    expect(result).toContain('%');
-    expect(result).toContain('1,5');
+    expect(formatPercent(0.015)).toBe('1,50%');
   });
 
   it('should respect decimals option', () => {
-    const result = formatPercent(0.12345, 3);
-    expect(result).toContain('%');
-    expect(result).toContain('12');
+    expect(formatPercent(0.12345, 3)).toBe('12,345%');
   });
 
   it('should use Brazilian locale formatting', () => {
-    const result = formatPercent(0.5);
-    expect(result).toContain('%');
-    expect(result).toContain('50');
+    expect(formatPercent(0.5)).toBe('50,00%');
   });
 });
 
 describe('formatNumber', () => {
   it('should format numbers with thousand separators', () => {
-    const result = formatNumber(50000);
-    expect(result).toContain('50');
-    expect(result).toContain('000');
+    expect(formatNumber(50000)).toBe('50.000');
   });
 });

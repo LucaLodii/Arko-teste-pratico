@@ -6,6 +6,17 @@ This project demonstrates clean architecture, separation of concerns, and profes
 
 ---
 
+## 🌐 Live Demo
+
+> **Update these URLs after deploying** (see [DEPLOYMENT.md](DEPLOYMENT.md))
+
+- **Application:** _https://your-app.vercel.app_ (replace after frontend deploy)
+- **API Documentation:** _https://your-backend.railway.app/api-docs_ (replace after backend deploy)
+
+Try the calculator directly in your browser once deployed!
+
+---
+
 ## 🎯 Project Overview
 
 ### What It Does
@@ -346,30 +357,55 @@ Response: { "status": "ok" }
 
 ## 🚢 Deployment
 
+See **[DEPLOYMENT.md](DEPLOYMENT.md)** for step-by-step deployment instructions.
+
 ### Recommended Platforms
 
 **Frontend:**
-- Vercel
+- **Vercel** (recommended) – Automatic deploys from Git, optimized for Vite/React
 - Netlify
 - GitHub Pages
 
 **Backend:**
-- Railway
+- **Railway** (recommended) – Easy setup, free tier, auto-deploys from Git
 - Render
 - Heroku
 
+### Deployed Infrastructure
+
+After deployment, your app will run on:
+
+- **Frontend:** Vercel or Netlify (automatic deploys from main branch)
+- **Backend:** Railway or Render (automatic deploys from main branch)
+- **SSL:** Automatic HTTPS on both platforms
+- **Monitoring:** Platform logs + optional Vercel Analytics
+
 ### Environment Variables
 
-Create `.env` files for each environment:
-
-**Backend `.env`:**
+**Backend** (set in Railway/Render dashboard):
 ```
-PORT=3000
 NODE_ENV=production
-FRONTEND_URL=https://your-frontend-url.com
+FRONTEND_URL=https://your-frontend-url.vercel.app
 ```
 
-**Frontend `.env`:**
+**Frontend** (set in Vercel/Netlify dashboard):
 ```
-VITE_API_URL=https://your-backend-url.com
+VITE_API_URL=https://your-backend-url.railway.app
+```
+
+For multiple environments (staging + production), use comma-separated origins:
+```
+FRONTEND_URL=https://staging.vercel.app,https://production.vercel.app
+```
+
+### Smoke Tests
+
+After deploying, verify the deployment:
+
+```bash
+# Test local backend
+cd backend && npm run smoke-test
+
+# Test production (replace with your backend URL)
+cd backend && npm run smoke-test:prod -- https://your-backend.railway.app
 ```
