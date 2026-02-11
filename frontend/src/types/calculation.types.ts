@@ -134,6 +134,23 @@ export interface BreakEvenResult {
 }
 
 /**
+ * Single data point in the cost timeline
+ */
+export interface TimelineDataPoint {
+  month: number;
+  cashCost: number;
+  financedCost: number;
+  rentalCost: number;
+}
+
+/**
+ * Response for timeline calculation
+ */
+export interface TimelineResponse {
+  timeline: TimelineDataPoint[];
+}
+
+/**
  * Complete calculation response aggregating all scenarios
  */
 export interface CalculationResponse {

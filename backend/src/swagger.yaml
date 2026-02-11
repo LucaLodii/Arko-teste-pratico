@@ -55,6 +55,38 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalError'
 
+  /api/calculate-timeline:
+    post:
+      summary: Calculate cost timeline
+      description: Returns cumulative costs per month for cash, financed, and rental scenarios. Used for cost-over-time chart visualization.
+      tags:
+        - Calculation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CalculationInput'
+      responses:
+        '200':
+          description: Timeline calculation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimelineResponse'
+        '400':
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalError'
+
 components:
   schemas:
     CalculationInput:
@@ -197,6 +229,37 @@ components:
           $ref: '#/components/schemas/RentalResult'
         breakEven:
           $ref: '#/components/schemas/BreakEvenResult'
+
+    TimelineDataPoint:
+      type: object
+      required:
+        - month
+        - cashCost
+        - financedCost
+        - rentalCost
+      properties:
+        month:
+          type: integer
+          minimum: 1
+          description: Month number (1 to analysisPeriodMonths)
+        cashCost:
+          type: number
+          description: Cumulative cash purchase cost at this month
+        financedCost:
+          type: number
+          description: Cumulative financed purchase cost at this month
+        rentalCost:
+          type: number
+          description: Cumulative rental cost at this month
+
+    TimelineResponse:
+      type: object
+      properties:
+        timeline:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimelineDataPoint'
+          description: Array of cost data points, one per month
 
     ValidationError:
       type: object

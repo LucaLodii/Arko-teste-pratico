@@ -1,3 +1,4 @@
+export { CostComparisonChart, type CostComparisonChartProps } from './CostComparisonChart';
 export { Header } from './Header';
 export { CalculatorForm } from './CalculatorForm';
 export type { CalculatorFormProps } from './CalculatorForm';

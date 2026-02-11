@@ -16,7 +16,9 @@ import { CashPurchaseService } from "./application/services/cash-purchase.servic
 import { FinancedPurchaseService } from "./application/services/financed-purchase.service";
 import { RentalService } from "./application/services/rental.service";
 import { BreakEvenService } from "./application/services/break-even.service";
+import { TimelineService } from "./application/services/timeline.service";
 import { CalculateComparisonUseCase } from "./application/use-cases/calculate-comparison.use-case";
+import { CalculateTimelineUseCase } from "./application/use-cases/calculate-timeline.use-case";
 import { CalculationController } from "./adapters/controllers/calculation.controller";
 import { createCalculationRoutes } from "./routes/calculation.routes";
 
@@ -42,15 +44,24 @@ const breakEvenService = new BreakEvenService(
   financedPurchaseService,
   rentalService
 );
+const timelineService = new TimelineService(
+  cashPurchaseService,
+  financedPurchaseService,
+  rentalService
+);
 
-// Use case and controller
+// Use cases and controller
 const calculateComparisonUseCase = new CalculateComparisonUseCase(
   cashPurchaseService,
   financedPurchaseService,
   rentalService,
   breakEvenService
 );
-const calculationController = new CalculationController(calculateComparisonUseCase);
+const calculateTimelineUseCase = new CalculateTimelineUseCase(timelineService);
+const calculationController = new CalculationController(
+  calculateComparisonUseCase,
+  calculateTimelineUseCase
+);
 
 // API routes: /api/health, /api/calculate
 const calculationRoutes = createCalculationRoutes(calculationController);

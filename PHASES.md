@@ -461,13 +461,13 @@ CalculationInput
 **Goal:** Interface bonita e fácil de usar (extra que conta ponto).
 
 **Tasks:**
-- [ ] Improve layout: spacing, typography, max-width container
-- [ ] Responsive: mobile-friendly (stack inputs, readable on small screens)
-- [ ] Loading/error states: clear feedback
-- [ ] Optional: light/dark theme or consistent color palette
-- [ ] Optional: tooltips for IPVA, custo de oportunidade, Sistema Price
+- [x] Improve layout: spacing, typography, max-width container
+- [x] Responsive: mobile-friendly (stack inputs, readable on small screens)
+- [x] Loading/error states: clear feedback
+- [x] Optional: light/dark theme or consistent color palette
+- [x] Optional: tooltips for IPVA, custo de oportunidade, Sistema Price
 
-**Status:** Not started
+**Status:** Complete
 
 ---
 
@@ -478,26 +478,22 @@ CalculationInput
 **Before starting:** This requires calling the backend multiple times with different analysisPeriodMonths values OR implementing a new endpoint that returns time-series data.
 
 **Tasks:**
-- [ ] Add Recharts dependency: `npm install recharts`
-- [ ] Option A - Frontend calculates (simpler):
-  - Make multiple API calls with analysisPeriodMonths from 1 to max
-  - Cache original input, loop from 1 to analysisPeriodMonths calling API
-  - Aggregate totalCost for each scenario at each month
-- [ ] Option B - Backend endpoint (better):
+- [x] Add Recharts dependency: `npm install recharts`
+- [x] Option B - Backend endpoint (better):
   - Create new endpoint `/api/calculate-timeline` that returns array of costs per month
-  - Returns: `{ month: number, cashCost: number, financedCost: number, rentalCost: number }[]`
-- [ ] Create `frontend/src/components/organisms/CostComparisonChart/`
-- [ ] Use Recharts LineChart component:
+  - Returns: `{ timeline: { month, cashCost, financedCost, rentalCost }[] }`
+- [x] Create `frontend/src/components/organisms/CostComparisonChart/`
+- [x] Use Recharts LineChart component:
   - X-axis: months (1 to analysisPeriodMonths)
   - Y-axis: custo acumulado (formatted as currency)
   - Three lines: "À Vista" (cash), "Financiado" (financed), "Aluguel" (rental)
   - Different colors for each line, legend, tooltips with currency formatting
-- [ ] Integrate into ComparisonResults component (below the summary cards)
-- [ ] Add visual markers for break-even points if available
+- [x] Integrate into ComparisonResults component (between summary cards and break-even section)
+- [x] Add visual markers for break-even points (ReferenceLine components)
 
 **Reference:** financial-formulas.md § 4 (break-even visualization), README
 
-**Status:** Not started
+**Status:** Complete
 
 ---
 

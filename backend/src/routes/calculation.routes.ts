@@ -11,5 +11,6 @@ import type { CalculationController } from '../adapters/controllers/calculation.
 export function createCalculationRoutes(controller: CalculationController): Router {
   const router = Router();
   router.post('/calculate', (req, res) => controller.calculate(req, res));
+  router.post('/calculate-timeline', (req, res) => controller.calculateTimeline(req, res));
   return router;
 }

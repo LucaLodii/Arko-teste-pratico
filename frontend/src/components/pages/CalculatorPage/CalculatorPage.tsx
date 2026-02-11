@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { Header, CalculatorForm, ComparisonResults } from '../../organisms';
 import { Card } from '../../atoms';
-import type { CalculationResponse } from '../../../types/calculation.types';
+import type {
+  CalculationInput,
+  CalculationResponse,
+} from '../../../types/calculation.types';
 import styles from './CalculatorPage.module.css';
 
 /**
@@ -9,11 +12,16 @@ import styles from './CalculatorPage.module.css';
  */
 export function CalculatorPage() {
   const [result, setResult] = useState<CalculationResponse | null>(null);
+  const [input, setInput] = useState<CalculationInput | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleCalculate = (calculationResult: CalculationResponse) => {
+  const handleCalculate = (
+    calculationResult: CalculationResponse,
+    calculationInput: CalculationInput
+  ) => {
     setResult(calculationResult);
+    setInput(calculationInput);
     setError(null);
     setLoading(false);
   };
@@ -38,7 +46,12 @@ export function CalculatorPage() {
       </section>
 
       <section className={styles.resultsSection}>
-        <ComparisonResults result={result} loading={loading} error={error} />
+        <ComparisonResults
+          result={result}
+          input={input}
+          loading={loading}
+          error={error}
+        />
       </section>
     </div>
   );

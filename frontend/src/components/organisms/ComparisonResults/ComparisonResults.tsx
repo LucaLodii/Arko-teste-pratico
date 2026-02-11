@@ -1,11 +1,18 @@
-import { useState } from 'react';
-import { Card } from '../../atoms';
+import { useEffect, useState } from 'react';
+import { Card, Icon } from '../../atoms';
+import { CostComparisonChart } from '../CostComparisonChart';
+import { calculationService } from '../../../services/calculation.service';
 import { formatCurrency } from '../../../utils/formatters';
-import type { CalculationResponse } from '../../../types/calculation.types';
+import type {
+  CalculationInput,
+  CalculationResponse,
+  TimelineResponse,
+} from '../../../types/calculation.types';
 import styles from './ComparisonResults.module.css';
 
 export interface ComparisonResultsProps {
   result: CalculationResponse | null;
+  input: CalculationInput | null;
   loading: boolean;
   error: string | null;
 }
@@ -13,14 +20,40 @@ export interface ComparisonResultsProps {
 const BREAK_EVEN_TOOLTIP =
   'Ponto de equilíbrio: o mês em que o custo acumulado do aluguel se iguala ao custo acumulado da compra. Antes desse mês, o aluguel é mais vantajoso; depois, a compra passa a ser.';
 
-export function ComparisonResults({ result, loading, error }: ComparisonResultsProps) {
+export function ComparisonResults({
+  result,
+  input,
+  loading,
+  error,
+}: ComparisonResultsProps) {
   const [cashExpanded, setCashExpanded] = useState(false);
   const [financedExpanded, setFinancedExpanded] = useState(false);
+  const [timelineData, setTimelineData] = useState<TimelineResponse | null>(
+    null
+  );
+  const [timelineLoading, setTimelineLoading] = useState(false);
+
+  useEffect(() => {
+    if (result && input) {
+      setTimelineLoading(true);
+      setTimelineData(null);
+      calculationService
+        .calculateTimeline(input)
+        .then(setTimelineData)
+        .catch(() => setTimelineData(null))
+        .finally(() => setTimelineLoading(false));
+    } else {
+      setTimelineData(null);
+    }
+  }, [result, input]);
 
   if (error) {
     return (
       <div className={styles.container} role="alert">
-        <div className={styles.error}>{error}</div>
+        <div className={styles.error}>
+          <Icon name="error" />
+          {error}
+        </div>
       </div>
     );
   }
@@ -46,6 +79,7 @@ export function ComparisonResults({ result, loading, error }: ComparisonResultsP
     return (
       <div className={styles.container}>
         <div className={styles.emptyState}>
+          <Icon name="info" />
           Preencha o formulário acima para ver os resultados
         </div>
       </div>
@@ -151,6 +185,22 @@ export function ComparisonResults({ result, loading, error }: ComparisonResultsP
           </p>
         </Card>
       </div>
+
+      {timelineLoading && (
+        <Card padding="large" className={styles.chartSkeleton}>
+          <div className={styles.skeleton}>
+            <div className={styles.skeletonTitle} />
+            <div className={styles.chartSkeletonPlaceholder} />
+          </div>
+        </Card>
+      )}
+      {timelineData && !timelineLoading && (
+        <CostComparisonChart
+          data={timelineData.timeline}
+          breakEvenCashMonths={breakEven.breakEvenCashMonths}
+          breakEvenFinancedMonths={breakEven.breakEvenFinancedMonths}
+        />
+      )}
 
       <div className={styles.breakEvenSection}>
         <h3 className={styles.breakEvenTitle}>

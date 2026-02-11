@@ -10,6 +10,7 @@
 import type { Request, Response } from 'express';
 import { ZodError } from 'zod';
 import type { CalculateComparisonUseCase } from '../../application/use-cases/calculate-comparison.use-case';
+import type { CalculateTimelineUseCase } from '../../application/use-cases/calculate-timeline.use-case';
 import { validateCalculationInput } from '../validators/calculation-input.validator';
 
 function formatZodError(error: ZodError): Array<{ path: string; message: string }> {
@@ -20,7 +21,10 @@ function formatZodError(error: ZodError): Array<{ path: string; message: string 
 }
 
 export class CalculationController {
-  constructor(private readonly calculateComparisonUseCase: CalculateComparisonUseCase) {}
+  constructor(
+    private readonly calculateComparisonUseCase: CalculateComparisonUseCase,
+    private readonly calculateTimelineUseCase: CalculateTimelineUseCase
+  ) {}
 
   async calculate(req: Request, res: Response): Promise<void> {
     try {
@@ -38,6 +42,26 @@ export class CalculationController {
       res.json(result);
     } catch (error) {
       console.error('[CalculationController] Unexpected error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
+  async calculateTimeline(req: Request, res: Response): Promise<void> {
+    try {
+      const validation = validateCalculationInput(req.body);
+
+      if (!validation.success) {
+        res.status(400).json({
+          error: 'Validation failed',
+          details: formatZodError(validation.error),
+        });
+        return;
+      }
+
+      const result = this.calculateTimelineUseCase.execute(validation.data);
+      res.json(result);
+    } catch (error) {
+      console.error('[CalculationController] Unexpected error in calculateTimeline:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }

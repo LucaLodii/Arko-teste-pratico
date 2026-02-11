@@ -7,8 +7,8 @@ import type { CalculationInput, CalculationResponse } from '../../../types/calcu
 import styles from './CalculatorForm.module.css';
 
 export interface CalculatorFormProps {
-  /** Callback when calculation succeeds */
-  onCalculate: (result: CalculationResponse) => void;
+  /** Callback when calculation succeeds (result and input for timeline chart) */
+  onCalculate: (result: CalculationResponse, input: CalculationInput) => void;
   
   /** Optional callback when errors occur */
   onError?: (error: string) => void;
@@ -34,6 +34,12 @@ interface FormState {
   insuranceRateAnnual: number; // Stored as percentage for display (e.g., 6)
   ipvaRate: number; // Stored as percentage for display (e.g., 4)
 }
+
+const TOOLTIPS = {
+  ipva: 'IPVA (Imposto sobre a Propriedade de Veículos Automotores): imposto anual calculado sobre o valor depreciado do veículo.',
+  custoOportunidade: 'Custo de oportunidade: o rendimento que você deixa de ganhar ao usar o dinheiro para comprar o carro em vez de investi-lo.',
+  sistemaPrice: 'Sistema Price: método de amortização com parcelas fixas onde juros diminuem e amortização aumenta ao longo do tempo.',
+};
 
 const DEFAULT_VALUES: FormState = {
   carValue: 50000,
@@ -168,7 +174,7 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
 
     try {
       const result = await calculationService.calculate(calculationInput);
-      onCalculate(result);
+      onCalculate(result, calculationInput);
     } catch (error: any) {
       let errorMessage = 'Erro ao calcular. Tente novamente.';
 
@@ -240,6 +246,7 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
             step={0.01}
             disabled={loading}
             required
+            tooltip={TOOLTIPS.sistemaPrice}
           />
 
           <InputField
@@ -297,6 +304,7 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
                 max={100}
                 step={1}
                 disabled={loading}
+                tooltip={TOOLTIPS.custoOportunidade}
               />
 
               <InputField
@@ -335,6 +343,7 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
                 max={100}
                 step={0.1}
                 disabled={loading}
+                tooltip={TOOLTIPS.ipva}
               />
             </div>
           </div>
@@ -344,10 +353,10 @@ export function CalculatorForm({ onCalculate, onError, onLoadingChange, initialV
       <Button
         type="submit"
         variant="primary"
-        disabled={loading}
+        loading={loading}
         fullWidth
       >
-        {loading ? 'Calculando...' : 'Calcular Comparação'}
+        Calcular Comparação
       </Button>
     </form>
   );
