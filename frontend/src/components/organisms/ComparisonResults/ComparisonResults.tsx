@@ -25,7 +25,7 @@ const shimmerClass =
 
 function ResultsSkeleton() {
   return (
-    <div className="space-y-12">
+    <div className="space-y-12" data-testid="results-skeleton">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {[1, 2, 3].map((i) => (
           <div

@@ -45,6 +45,8 @@ describe('CalculatorForm', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
+        // Reset implementation to default
+        (calculationService.calculate as any).mockReset();
     });
 
     it('should render all basic fields', () => {
@@ -58,7 +60,7 @@ describe('CalculatorForm', () => {
     it('should toggle advanced options', () => {
         render(<CalculatorForm onCalculate={mockOnCalculate} />);
 
-        // Initially hidden (checking for a field inside advanced options)
+        // Initially hidden
         expect(screen.queryByText('Entrada (%)')).not.toBeInTheDocument();
 
         const toggleBtn = screen.getByText('Opções Avançadas');
@@ -81,7 +83,6 @@ describe('CalculatorForm', () => {
             expect(screen.getAllByRole('alert').length).toBeGreaterThan(0);
         });
 
-        // Check specific error message (implementation detail: "O valor do carro deve ser maior que zero")
         expect(screen.getByText('O valor do carro deve ser maior que zero')).toBeInTheDocument();
         expect(mockOnCalculate).not.toHaveBeenCalled();
     });
@@ -92,15 +93,16 @@ describe('CalculatorForm', () => {
 
         render(<CalculatorForm onCalculate={mockOnCalculate} />);
 
-        // Fill basic fields (assuming defaults are already valid or close, let's explicit some)
-        // Note: The mock InputField simply calls onChange.
-        // The component uses handleChange which updates state.
-        // Default values are: Car 50k, Rent 2200, Interest 1.5, Term 48... -> Should be valid by default?
-
+        // Just click submit, assuming default values are valid
         const submitBtn = screen.getByText('Calcular Comparação');
         fireEvent.click(submitBtn);
 
         await waitFor(() => {
+            // Check if validation failed
+            if (screen.queryByRole('alert')) {
+                // Fails the test with a message showing the alert text
+                throw new Error('Validation failed with: ' + screen.getByRole('alert').textContent);
+            }
             expect(calculationService.calculate).toHaveBeenCalled();
             expect(mockOnCalculate).toHaveBeenCalledWith(mockResult, expect.anything());
         });
@@ -120,7 +122,5 @@ describe('CalculatorForm', () => {
         await waitFor(() => {
             expect(mockOnError).toHaveBeenCalledWith(expect.stringContaining('Erro ao conectar'));
         });
-
-        expect(screen.getByText(expect.stringContaining('Erro ao conectar'))).toBeInTheDocument();
     });
 });

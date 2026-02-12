@@ -105,8 +105,8 @@ describe('ComparisonResults', () => {
                 error={null}
             />
         );
-        // Check for skeleton elements or class
-        expect(container.querySelector('.animate-shimmer')).toBeInTheDocument();
+        // Check for skeleton elements
+        expect(screen.getByTestId('results-skeleton')).toBeInTheDocument();
     });
 
     it('should render error message when error is present', () => {

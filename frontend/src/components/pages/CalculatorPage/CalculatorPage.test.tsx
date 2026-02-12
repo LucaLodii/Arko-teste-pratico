@@ -6,17 +6,23 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { CalculatorPage } from '../CalculatorPage';
 
-// Mock child components
-vi.mock('../../../organisms/Header', () => ({
-    Header: () => <header data-testid="mock-header">Header</header>
+// Mock Three.js dependencies
+vi.mock('@react-three/fiber', () => ({
+    Canvas: ({ children }: any) => <div>{children}</div>,
+    useFrame: vi.fn(),
+    useThree: () => ({ camera: { position: [0, 0, 0] }, size: { width: 0, height: 0 } }),
 }));
 
-vi.mock('../../../organisms/Footer', () => ({
-    Footer: () => <footer data-testid="mock-footer">Footer</footer>,
-    Copyright: () => <div data-testid="mock-copyright">Copyright</div>
+vi.mock('three', () => ({
+    Vector3: class { set() { } },
+    Color: class { },
 }));
 
-vi.mock('../../../organisms/CalculatorForm', () => ({
+// Mock the entire organisms module to avoid loading real components (and Three.js)
+vi.mock('../../organisms', () => ({
+    Header: () => <div data-testid="mock-header">Header</div>,
+    Footer: () => <div data-testid="mock-footer">Footer</div>,
+    Copyright: () => <div data-testid="mock-copyright">Copyright</div>,
     CalculatorForm: ({ onCalculate, onError, onLoadingChange }: any) => (
         <div data-testid="mock-calculator-form">
             <button
@@ -32,34 +38,37 @@ vi.mock('../../../organisms/CalculatorForm', () => ({
             </button>
             <button onClick={() => onError('Mock Error')}>Simulate Error</button>
         </div>
-    )
-}));
-
-vi.mock('../../../organisms/ComparisonResults', () => ({
+    ),
     ComparisonResults: ({ loading, error, result }: any) => (
         <div data-testid="mock-results">
             {loading && <span>Loading...</span>}
             {error && <span>{error}</span>}
             {result && <span>Result Received</span>}
         </div>
-    )
-}));
-
-vi.mock('../../../molecules', () => ({
+    ),
+    HeroSection: () => <div data-testid="mock-hero">Hero</div>,
+    MethodologySection: () => <div data-testid="mock-methodology">Methodology</div>,
+    AboutSection: () => <div data-testid="mock-about">About</div>,
     HowToUseCard: ({ title }: any) => <div data-testid="mock-how-to-use">{title}</div>
 }));
 
 vi.mock('../../atoms', () => ({
-    Icon: ({ name }: any) => <span data-testid={`icon-${name}`} />
+    Icon: ({ name }: any) => <span data-testid={`icon-${name}`} />,
+    Card: ({ children }: any) => <div>{children}</div>
 }));
 
 describe('CalculatorPage', () => {
     it('should render page structure', () => {
         render(<CalculatorPage />);
         expect(screen.getByTestId('mock-header')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-hero')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-how-to-use')).toBeInTheDocument();
         expect(screen.getByTestId('mock-calculator-form')).toBeInTheDocument();
         expect(screen.getByTestId('mock-results')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-methodology')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-about')).toBeInTheDocument();
         expect(screen.getByTestId('mock-footer')).toBeInTheDocument();
+        expect(screen.getByTestId('mock-copyright')).toBeInTheDocument();
     });
 
     it('should handle calculation flow', async () => {
