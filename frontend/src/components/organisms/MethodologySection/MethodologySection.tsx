@@ -22,10 +22,6 @@ export function MethodologySection() {
             <div className="relative z-10 mx-auto max-w-[1200px] px-4 md:px-8">
                 {/* Header */}
                 <div className="mb-12 text-center">
-                    <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-sage-500/30 bg-sage-500/10 px-4 py-2 text-sm font-medium text-sage-300">
-                        <Icon name="info" size="sm" />
-                        <span>Metodologia</span>
-                    </div>
                     <h2 className="mb-4 flex items-center justify-center gap-3 text-3xl font-bold text-white md:text-4xl">
                         <Icon name="search" size="lg" className="text-sage-400" />
                         Como Calculamos os Resultados?

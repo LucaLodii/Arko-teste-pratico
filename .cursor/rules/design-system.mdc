@@ -34,4 +34,3 @@ When editing or creating components in `frontend/src/components/`:
 ## Reference
 
 - DESIGN-PHASES.md for migration order and validation
-- GeminiResponse/ folder for styled component implementations

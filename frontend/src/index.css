@@ -2,14 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Smooth scroll for anchor navigation */
+html {
+  scroll-behavior: smooth;
+}
+
 /* Estilos Globais e Reset */
 body {
-  @apply bg-sage-50 text-olive-900 antialiased selection:bg-sage-200 selection:text-olive-900;
+  @apply text-olive-900 antialiased selection:bg-sage-200 selection:text-olive-900;
+  background-color: #FFFFFF;
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  width: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -34,6 +40,10 @@ body {
 
   .text-small {
     @apply text-sm text-olive-500;
+  }
+
+  .text-currency {
+    @apply font-mono font-medium text-olive-800 tabular-nums;
   }
 
   /* Utilitário para esconder scrollbar mas manter funcionalidade */

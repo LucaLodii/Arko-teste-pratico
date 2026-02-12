@@ -17,9 +17,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@react-three/fiber": "^9.5.0",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "swagger-ui-express": "^5.0.1",
+    "three": "^0.182.0",
     "yaml": "^2.8.2",
     "yamljs": "^0.3.0",
     "zod": "^4.3.6"

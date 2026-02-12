@@ -1,4 +1,4 @@
-# 🚗 Calculadora Alugar vs Comprar Carro
+# 🚗 Car Calc
 
 Aplicação web que compara a viabilidade financeira de **alugar**, **comprar à vista** ou **financiar** um carro.
 

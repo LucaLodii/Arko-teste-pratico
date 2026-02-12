@@ -1,6 +1,7 @@
 import React from 'react';
 
 export type IconName =
+  | 'logo'
   | 'error'
   | 'info'
   | 'warning'
@@ -23,7 +24,7 @@ export type IconName =
 
 export interface IconProps {
   name: IconName;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
   className?: string;
 }
 
@@ -33,9 +34,16 @@ export function Icon({ name, size = 'md', className = '' }: IconProps) {
     md: 'w-5 h-5',
     lg: 'w-6 h-6',
     xl: 'w-8 h-8',
+    '2xl': 'w-10 h-10',
   };
 
   const icons: Record<IconName, React.ReactNode> = {
+    logo: (
+      // Car Calc: clean car silhouette
+      <g fill="currentColor">
+        <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z" />
+      </g>
+    ),
     linkedin: (
       <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z M2 9h4v12H2z M4 2a2 2 0 1 1-1.998 2.002A2 2 0 0 1 4 2z" />
     ),
@@ -150,7 +158,7 @@ export function Icon({ name, size = 'md', className = '' }: IconProps) {
     ),
   };
 
-  const isFill = ['linkedin', 'github', 'info', 'error', 'warning'].includes(name);
+  const isFill = ['logo', 'linkedin', 'github', 'info', 'error', 'warning'].includes(name);
 
   return (
     <svg
