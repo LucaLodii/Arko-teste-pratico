@@ -8,7 +8,7 @@ import { Icon } from '../../atoms';
  */
 export function Header() {
   const [isVisible, setIsVisible] = useState(true);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
 
   const scrollToSection = (sectionId: string) => {
     document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
