@@ -1,0 +1,46 @@
+---
+description: Design changes must preserve project requirements from original brief
+globs: frontend/**/*, DESIGN-PHASES.md
+alwaysApply: false
+---
+
+# Requirements Preservation
+
+When working on frontend design or DESIGN-PHASES.md, ensure the project requirements from the original brief remain intact.
+
+## Core Product (Must Not Break)
+
+**Original brief:** Site comparing rent vs buy (Localiza-style) with simulations for cash and financed purchase.
+
+### Three Scenarios Must Display
+
+- Compra à Vista (total cost + breakdown)
+- Compra Financiada (total cost, parcela, juros + breakdown)
+- Aluguel (total cost, monthly cost)
+
+### Form Fields Must Be Preserved
+
+- Valor do carro (carValue)
+- Valor do aluguel mensal (monthlyRent)
+- Taxa de juros mensal (interestRateMonth)
+- Prazo do financiamento (financingTermMonths)
+- Período de análise (analysisPeriodMonths)
+- Opções avançadas: entrada (downPaymentPercent), manutenção anual, seguro, IPVA
+
+### What Must NOT Change
+
+- Calculation logic (backend services)
+- API calls or integration (calculationService, POST /api/calculate, /api/calculate-timeline)
+- Data flow (form → API → result → display)
+- Types from `frontend/src/types/calculation.types.ts`
+
+### Validation Checklist
+
+Before marking a design phase complete:
+
+- [ ] All three scenarios visible in results
+- [ ] All form fields present and functional
+- [ ] App runs locally per README (`npm run dev` in frontend and backend)
+- [ ] No TypeScript errors, no console errors
+
+See DESIGN-PHASES.md "Project Requirements Alignment" section for full details.

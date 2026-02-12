@@ -1,19 +1,21 @@
+/**
+ * InputField molecule
+ *
+ * Import rules:
+ * - Molecules import atoms from '../../atoms'
+ * - Organisms import atoms from '../../atoms' and molecules from '../../molecules'
+ */
 import { useId } from 'react';
-import { Label, Input, Tooltip } from '../../atoms';
-import styles from './InputField.module.css';
+import type { InputHTMLAttributes } from 'react';
+import { Label, Input, Tooltip, Icon } from '../../atoms';
 
-export interface InputFieldProps {
+export interface InputFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange'> {
   label: string;
   value: string | number;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  error?: string;
-  type?: 'text' | 'number' | 'email';
-  placeholder?: string;
-  required?: boolean;
-  disabled?: boolean;
-  min?: number;
-  max?: number;
-  step?: number;
+  error?: string | boolean;
+  helperText?: string;
+  fullWidth?: boolean;
   id?: string;
   tooltip?: string;
 }
@@ -23,48 +25,73 @@ export function InputField({
   value,
   onChange,
   error,
+  helperText,
+  fullWidth = true,
+  id: idProp,
+  tooltip,
+  required,
   type = 'text',
   placeholder,
-  required,
   disabled,
   min,
   max,
   step,
-  id: idProp,
-  tooltip,
+  className,
+  ...rest
 }: InputFieldProps) {
   const generatedId = useId();
   const id = idProp ?? generatedId;
 
+  const errorMessage = typeof error === 'string' ? error : undefined;
+  const hasError = !!error;
+  const describedBy =
+    errorMessage ? `${id}-error` : helperText ? `${id}-helper` : undefined;
+
   return (
-    <div className={styles.inputField}>
-      <div className={styles.labelRow}>
+    <div className={`flex flex-col ${fullWidth ? 'w-full' : ''} ${className ?? ''}`.trim()}>
+      <div className="mb-1.5 flex items-center gap-1.5">
         <Label htmlFor={id} required={required}>
           {label}
         </Label>
         {tooltip && (
           <Tooltip content={tooltip}>
-            <span aria-label="Mais informações">ℹ</span>
+            <span aria-label="Mais informações">
+              <Icon name="info" />
+            </span>
           </Tooltip>
         )}
       </div>
       <Input
         id={id}
-        type={type}
+        type={(type === 'number' || type === 'email' ? type : 'text') as 'text' | 'number' | 'email'}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
         disabled={disabled}
-        error={!!error}
-        min={min}
-        max={max}
-        step={step}
+        min={typeof min === 'number' ? min : undefined}
+        max={typeof max === 'number' ? max : undefined}
+        step={typeof step === 'number' ? step : undefined}
+        error={hasError}
+        aria-invalid={hasError}
+        aria-describedby={describedBy}
+        {...rest}
       />
-      {error && (
-        <span className={styles.errorMessage} role="alert">
-          {error}
-        </span>
-      )}
+      <div className="mt-1.5 min-h-[20px]">
+        {errorMessage ? (
+          <span
+            id={`${id}-error`}
+            className="flex items-center gap-1 text-sm font-medium text-status-error animate-slide-down"
+            role="alert"
+          >
+            <Icon name="error" size="sm" className="shrink-0" />
+            {errorMessage}
+          </span>
+        ) : helperText ? (
+          <span id={`${id}-helper`} className="text-xs text-olive-500">
+            {helperText}
+          </span>
+        ) : null}
+      </div>
     </div>
   );
 }
