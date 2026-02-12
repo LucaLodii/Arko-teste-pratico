@@ -20,7 +20,9 @@ export type IconName =
   | 'search'
   | 'trending-down'
   | 'trending-up'
-  | 'building';
+  | 'building'
+  | 'menu'
+  | 'close';
 
 export interface IconProps {
   name: IconName;
@@ -154,6 +156,22 @@ export function Icon({ name, size = 'md', className = '' }: IconProps) {
         strokeLinejoin="round"
         strokeWidth={2}
         d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+      />
+    ),
+    menu: (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M4 6h16M4 12h16M4 18h16"
+      />
+    ),
+    close: (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M6 18L18 6M6 6l12 12"
       />
     ),
   };

@@ -85,7 +85,7 @@ export function CalculatorPage() {
       {/* Container 4: About Project (Sobre o projeto) + Footer */}
       <div id="sobre" className="scroll-mt-16 w-full bg-sage-50 px-5 py-12 md:px-10 md:py-16 lg:px-12">
         <div className="mx-auto max-w-[1200px]">
-          <div className="flex flex-row items-start justify-between gap-12 lg:gap-16">
+          <div className="flex flex-row items-stretch justify-between gap-12 lg:gap-16">
             <section className="w-1/2 shrink-0 min-w-0">
               <AboutSection />
             </section>
